@@ -1,0 +1,71 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-ssd
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+allowVolumeExpansion: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polkadot-private-node-rpc
+spec:
+  ports:
+  - port: 9944
+  selector:
+    app: polkadot-private-node
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: polkadot-private-node
+spec:
+  selector:
+    matchLabels:
+      app: polkadot-private-node # Label selector that determines which Pods belong to the StatefulSet
+                 # Must match spec: template: metadata: labels
+  serviceName: "polkadot-private-node"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: polkadot-private-node # Pod template's label selector
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: polkadot-private-node
+        image: parity/polkadot:latest-v0.7.28
+        args: [ "--name", "🐑 Hodl_dot_farm_oncloud 🐑", "--pruning=archive", "--wasm-execution Compiled" ]
+        ports:
+        - containerPort: 9944
+          name: dot-ws-port
+        volumeMounts:
+        - name: polkadot-private-node-pv-claim
+          mountPath: /polkadot
+      initContainers:
+      - name: polkadot-archive-downloader
+        image: polkadot-archive-downloader
+        args:
+        - "$(ARCHIVE_URL)"
+        env:
+        - name: ARCHIVE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: ARCHIVE_URL
+        volumeMounts:
+        - name: polkadot-private-node-pv-claim
+          mountPath: /polkadot
+  volumeClaimTemplates:
+  - metadata:
+      name: polkadot-private-node-pv-claim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: local-ssd
+      resources:
+        requests:
+          storage: 30Gi

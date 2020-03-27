@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- polkadot-private-node.yaml
+
+imageTags:
+  - name: polkadot-archive-downloader
+    newName: gcr.io/tzmon12413cc77d7efd94/polkadot-archive-downloader
+    newTag: latest
+
+configMapGenerator:
+- name: polkadot-configmap
+  literals:
+  - ARCHIVE_URL=""
