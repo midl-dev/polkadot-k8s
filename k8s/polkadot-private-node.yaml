@@ -22,6 +22,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: polkadot-private-node
+  namespace: dot
 spec:
   selector:
     matchLabels:
@@ -38,8 +39,8 @@ spec:
         fsGroup: 1000
       containers:
       - name: polkadot-private-node
-        image: parity/polkadot:latest-v0.7.28
-        args: [ "--name", "🐑 Hodl_dot_farm_oncloud 🐑", "--pruning=archive", "--wasm-execution Compiled" ]
+        image: parity/polkadot:v0.7.28
+        args: [ "--name", "🐑Hodl_dot_farm_oncloud🐑", "--pruning=archive", "--wasm-execution", "Compiled" ]
         ports:
         - containerPort: 9944
           name: dot-ws-port
@@ -49,14 +50,6 @@ spec:
       initContainers:
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
-        args:
-        - "$(ARCHIVE_URL)"
-        env:
-        - name: ARCHIVE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: polkadot-configmap
-              key: ARCHIVE_URL
         volumeMounts:
         - name: polkadot-private-node-pv-claim
           mountPath: /polkadot

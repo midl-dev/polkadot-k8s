@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - polkadot-private-node.yaml
+- polkadot-namespace.yaml
 
 imageTags:
   - name: polkadot-archive-downloader
