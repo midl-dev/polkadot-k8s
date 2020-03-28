@@ -22,7 +22,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: polkadot-private-node
-  namespace: dot
 spec:
   selector:
     matchLabels:
@@ -39,8 +38,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: polkadot-private-node
-        image: parity/polkadot:v0.7.28
-        args: [ "--name", "🐑Hodl_dot_farm_oncloud🐑", "--pruning=archive", "--wasm-execution", "Compiled" ]
+        image: polkadot-private-node
         ports:
         - containerPort: 9944
           name: dot-ws-port

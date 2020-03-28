@@ -4,7 +4,18 @@ metadata:
   name: polkadot-sentry-node-rpc
 spec:
   ports:
-  - port: 9944
+  - port: 9933
+  selector:
+    app: polkadot-sentry-node
+  clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polkadot-sentry-node
+spec:
+  ports:
+  - port: 30033
   selector:
     app: polkadot-sentry-node
   clusterIP: None
@@ -13,18 +24,16 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: polkadot-sentry-node
-  namespace: dot
 spec:
   selector:
     matchLabels:
-      app: polkadot-sentry-node # Label selector that determines which Pods belong to the StatefulSet
-                 # Must match spec: template: metadata: labels
-  serviceName: "polkadot-sentry-node"
+      app: polkadot-sentry-node
+  serviceName: polkadot-sentry-node
   replicas: 2
   template:
     metadata:
       labels:
-        app: polkadot-sentry-node # Pod template's label selector
+        app: polkadot-sentry-node
     spec:
       securityContext:
         fsGroup: 1000
@@ -33,8 +42,11 @@ spec:
         image: parity/polkadot:v0.7.28
         args: [ "--sentry", "--pruning=archive", "--wasm-execution", "Compiled" ]
         ports:
-        - containerPort: 9944
-          name: dot-ws-port
+        - containerPort: 9933
+          name: dot-rpc-port
+        ports:
+        - containerPort: 30033
+          name: dot-p2p-port
         volumeMounts:
         - name: polkadot-sentry-node-pv-claim
           mountPath: /polkadot

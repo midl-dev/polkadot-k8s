@@ -7,6 +7,9 @@ resources:
 - polkadot-namespace.yaml
 
 imageTags:
+  - name: polkadot-private-node
+    newName: gcr.io/tzmon12413cc77d7efd94/polkadot-private-node
+    newTag: latest
   - name: polkadot-archive-downloader
     newName: gcr.io/tzmon12413cc77d7efd94/polkadot-archive-downloader
     newTag: latest

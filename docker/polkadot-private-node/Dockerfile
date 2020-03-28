@@ -1,0 +1,14 @@
+FROM parity/polkadot:v0.7.28
+USER root
+# install tools and dependencies
+RUN apt-get update && \
+	DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -y \
+		jq dnsutils iputils-ping  && \
+	apt-get autoremove -y && \
+	apt-get clean && \
+	find /var/lib/apt/lists/ -type f -not -name lock -delete;
+USER polkadot
+COPY polkadot-private-node.sh /
+ENTRYPOINT ["/polkadot-private-node.sh"]
+CMD []
