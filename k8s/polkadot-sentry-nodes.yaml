@@ -40,7 +40,7 @@ spec:
       containers:
       - name: polkadot-sentry-node
         image: parity/polkadot:v0.7.28
-        args: [ "--sentry", "--pruning=archive", "--wasm-execution", "Compiled" ]
+        args: [ "--sentry", "--pruning=archive", "--wasm-execution", "Compiled", "--unsafe-rpc-external", "--rpc-cors=all" ]
         ports:
         - containerPort: 9933
           name: dot-rpc-port
@@ -56,6 +56,14 @@ spec:
         volumeMounts:
         - name: polkadot-sentry-node-pv-claim
           mountPath: /polkadot
+        args:
+        - "$(ARCHIVE_URL)"
+        env:
+        - name: ARCHIVE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: ARCHIVE_URL
   volumeClaimTemplates:
   - metadata:
       name: polkadot-sentry-node-pv-claim

@@ -48,6 +48,14 @@ spec:
       initContainers:
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
+        args:
+        - "$(ARCHIVE_URL)"
+        env:
+        - name: ARCHIVE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: ARCHIVE_URL
         volumeMounts:
         - name: polkadot-private-node-pv-claim
           mountPath: /polkadot

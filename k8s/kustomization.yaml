@@ -17,4 +17,4 @@ imageTags:
 configMapGenerator:
 - name: polkadot-configmap
   literals:
-  - ARCHIVE_URL=""
+      - ARCHIVE_URL="https://storage.googleapis.com/kusama-snapshot/ksmcc3-2020-03-27.tar.lz4"
