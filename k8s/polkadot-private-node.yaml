@@ -18,6 +18,34 @@ spec:
     app: polkadot-private-node
   clusterIP: None
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: polkadot-private-node-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: polkadot-private-node
+  policyTypes:
+  - Ingress
+  - Egress
+  egress:
+  - ports:
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+  - ports:
+    - port: 30033
+      protocol: TCP
+    - port: 9933
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: polkadot-sentry-node
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
