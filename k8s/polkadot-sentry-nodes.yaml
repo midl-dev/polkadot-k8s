@@ -28,7 +28,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: polkadot-private-node
+      app: polkadot-sentry-node
   policyTypes:
   - Ingress
   - Egress
@@ -39,19 +39,19 @@ spec:
     - port: 53
       protocol: UDP
   - ports:
-    - port: 30033
+    - port: 30333
       protocol: TCP
-  - ports:
-    - port: 9933
-      protocol: TCP
-    to:
-    - podSelector:
-        matchLabels:
-          app: polkadot-sentry-node
   ingress:
   - ports:
     - port: 30333
       protocol: TCP
+  - ports:
+    - port: 9933
+      protocol: TCP
+    from:
+    - podSelector:
+        matchLabels:
+          app: polkadot-private-node
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -73,7 +73,7 @@ spec:
       containers:
       - name: polkadot-sentry-node
         image: parity/polkadot:v0.7.28
-        args: [ "--sentry", "--pruning=archive", "--wasm-execution", "Compiled", "--unsafe-rpc-external", "--rpc-cors=all" ]
+        args: [ "--sentry", "--pruning=archive", "--wasm-execution", "Compiled", "--unsafe-rpc-external", "--rpc-cors=all", "--no-telemetry" ]
         ports:
         - containerPort: 9933
           name: dot-rpc-port
