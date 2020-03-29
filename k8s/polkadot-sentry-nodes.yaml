@@ -41,6 +41,12 @@ spec:
   - ports:
     - port: 30333
       protocol: TCP
+  - ports:
+    - port: 30334
+      protocol: TCP
+  - ports:
+    - port: 30100
+      protocol: TCP
   ingress:
   - ports:
     - port: 30333
