@@ -15,7 +15,7 @@ metadata:
   name: polkadot-sentry-node
 spec:
   ports:
-  - port: 30033
+  - port: 30333
   selector:
     app: polkadot-sentry-node
   clusterIP: None
@@ -78,7 +78,7 @@ spec:
         - containerPort: 9933
           name: dot-rpc-port
         ports:
-        - containerPort: 30033
+        - containerPort: 30333
           name: dot-p2p-port
         volumeMounts:
         - name: polkadot-sentry-node-pv-claim

@@ -10,5 +10,5 @@ sentry_node_1_node_id=$(curl -H "Content-Type: application/json" -d '{"id":1, "j
          --out-peers=2 \
          --in-peers=2 \
          --reserved-only \
-         --reserved-nodes /dnsaddr/polkadot-sentry-node-0.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_0_node_id} \
-         --reserved-nodes /dnsaddr/polkadot-sentry-node-1.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_1_node_id}
+         --reserved-nodes /dns4/polkadot-sentry-node-0.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_0_node_id} \
+         --reserved-nodes /dns4/polkadot-sentry-node-1.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_1_node_id}
