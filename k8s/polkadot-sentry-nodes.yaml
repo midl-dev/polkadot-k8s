@@ -50,7 +50,7 @@ spec:
           app: polkadot-sentry-node
   ingress:
   - ports:
-    - port: 30033
+    - port: 30333
       protocol: TCP
 ---
 apiVersion: apps/v1

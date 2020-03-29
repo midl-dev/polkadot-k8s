@@ -37,7 +37,7 @@ spec:
     - port: 53
       protocol: UDP
   - ports:
-    - port: 30033
+    - port: 30333
       protocol: TCP
     - port: 9933
       protocol: TCP
