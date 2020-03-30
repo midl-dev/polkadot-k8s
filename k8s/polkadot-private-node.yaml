@@ -36,6 +36,8 @@ spec:
       protocol: TCP
     - port: 53
       protocol: UDP
+    - port: 443
+      protocol: TCP
   - ports:
     - port: 30333
       protocol: TCP
