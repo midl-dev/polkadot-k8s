@@ -90,6 +90,15 @@ spec:
         volumeMounts:
         - name: polkadot-sentry-node-pv-claim
           mountPath: /polkadot
+      - name: polkadot-api-server
+        image: simplyvc/polkadot_api_server:1.9.1
+        volumeMounts:
+        - name: polkadot-api-server-config-vol
+          mountPath: /opt/polkadot_api_server/config
+      volumes:
+        - name: polkadot-api-server-config-vol
+          configMap:
+            name: polkadot-api-server-config
       initContainers:
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
@@ -113,3 +122,17 @@ spec:
       resources:
         requests:
           storage: 30Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: polkadot-api-server-config
+  namespace: default
+data:
+  user_config_main.ini: |
+    [api_server]
+    port = 3000
+  user_config_nodes.ini: |
+    [local]
+    node_name = polkadot_sentry_node
+    ws_url = ws://127.0.0.1:9944
