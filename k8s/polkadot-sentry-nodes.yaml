@@ -98,7 +98,7 @@ spec:
       volumes:
         - name: polkadot-api-server-config-vol
           configMap:
-            name: polkadot-api-server-config
+            name: polkadot-api-server-config-sentry
       initContainers:
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
@@ -126,7 +126,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: polkadot-api-server-config
+  name: polkadot-api-server-config-sentry
   namespace: default
 data:
   user_config_main.ini: |
