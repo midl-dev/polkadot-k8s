@@ -10,10 +10,13 @@ allowVolumeExpansion: true
 apiVersion: v1
 kind: Service
 metadata:
-  name: polkadot-private-node-rpc
+  name: polkadot-private-node
 spec:
   ports:
+  - port: 9615
+    name: health
   - port: 9944
+    name: rpc
   selector:
     app: polkadot-private-node
   clusterIP: None
@@ -47,6 +50,10 @@ spec:
     - podSelector:
         matchLabels:
           app: polkadot-sentry-node
+  ingress:
+  - ports:
+    - port: 9615
+      protocol: TCP
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -70,6 +77,8 @@ spec:
       - name: polkadot-private-node
         image: polkadot-private-node
         ports:
+        - containerPort: 9615
+          name: metrics-port
         - containerPort: 9944
           name: dot-ws-port
         volumeMounts:

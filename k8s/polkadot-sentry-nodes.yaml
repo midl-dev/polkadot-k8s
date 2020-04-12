@@ -40,6 +40,8 @@ spec:
       protocol: UDP
     - port: 443
       protocol: TCP
+    - port: 9615
+      protocol: TCP
     - port: 30333
       protocol: TCP
     - port: 30334
@@ -78,7 +80,7 @@ spec:
       containers:
       - name: polkadot-sentry-node
         image: parity/polkadot:v0.7.28
-        args: [ "--sentry", "--pruning=archive", "--wasm-execution", "Compiled", "--unsafe-rpc-external", "--rpc-cors=all" ]
+        args: [ "--sentry", "--pruning=archive", "--wasm-execution", "Compiled", "--unsafe-rpc-external", "--rpc-cors=all", "--telemetry-url", "wss://telemetry-backend.w3f.community/submit" ]
         ports:
         - containerPort: 9933
           name: dot-rpc-port
