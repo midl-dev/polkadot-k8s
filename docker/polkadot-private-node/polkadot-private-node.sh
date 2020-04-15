@@ -31,6 +31,9 @@ sentry_node_1_node_id=$(get_node_id "polkadot-sentry-node-1.polkadot-sentry-node
          --in-peers=2 \
          --reserved-only \
          --prometheus-external \
+         --unsafe-ws-external \
+         --unsafe-rpc-external \
+         --rpc-cors=all \
          --telemetry-url wss://telemetry-backend.w3f.community/submit \
          --reserved-nodes /dns4/polkadot-sentry-node-0.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_0_node_id} \
          --reserved-nodes /dns4/polkadot-sentry-node-1.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_1_node_id}

@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
 - polkadot-private-node.yaml
 - polkadot-sentry-nodes.yaml
+- polkadot-panic-alerter.yaml
 
 imageTags:
   - name: polkadot-private-node
