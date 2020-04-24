@@ -9,6 +9,6 @@ RUN apt-get update && \
 	apt-get clean && \
 	find /var/lib/apt/lists/ -type f -not -name lock -delete;
 USER polkadot
-COPY polkadot-private-node.sh /
-ENTRYPOINT ["/polkadot-private-node.sh"]
+COPY polkadot-sentry-node.sh /
+ENTRYPOINT ["/polkadot-sentry-node.sh"]
 CMD []

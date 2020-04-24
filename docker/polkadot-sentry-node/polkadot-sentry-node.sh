@@ -23,15 +23,11 @@ get_node_id() {
     fi
 }
 
-sentry_node_0_node_id=$(get_node_id "polkadot-sentry-node-0.polkadot-sentry-node")
-sentry_node_1_node_id=$(get_node_id "polkadot-sentry-node-1.polkadot-sentry-node")
+private_node_id=$(get_node_id "polkadot-private-node-0.polkadot-private-node")
 
-/usr/local/bin/polkadot --validator --name "🐑 Hodl_dot_farm 🐑" --pruning=archive --wasm-execution Compiled \
-         --reserved-only \
-         --prometheus-external \
+/usr/local/bin/polkadot --pruning=archive --wasm-execution Compiled \
          --unsafe-ws-external \
          --unsafe-rpc-external \
          --rpc-cors=all \
          --telemetry-url 'wss://telemetry-backend.w3f.community/submit 0' \
-         --sentry-nodes /dns4/polkadot-sentry-node-0.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_0_node_id} \
-         --sentry-nodes /dns4/polkadot-sentry-node-1.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_1_node_id}
+         --sentry /dns4/polkadot-private-node-0.polkadot-private-node/tcp/30333/p2p/${private_node_id} \
