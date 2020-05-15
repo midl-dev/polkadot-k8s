@@ -1,4 +1,4 @@
-FROM parity/polkadot:v0.7.30
+FROM parity/polkadot:v0.7.33
 USER root
 # install tools and dependencies
 RUN apt-get update && \

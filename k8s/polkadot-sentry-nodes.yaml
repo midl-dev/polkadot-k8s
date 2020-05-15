@@ -124,4 +124,4 @@ spec:
       storageClassName: local-ssd
       resources:
         requests:
-          storage: 30Gi
+          storage: 50Gi
