@@ -2,15 +2,13 @@
 provider "kubernetes" {
 }
 
-#resource "kubernetes_secret" "website_builder_key" {
-#  metadata {
-#    name = "website-builder-credentials"
-#  }
-#  data = {
-#    json_key = "${base64decode(google_service_account_key.website_builder_key.private_key)}"
-#  }
-#}
-#
+resource "kubernetes_secret" "polkadot_node_keys" {
+  metadata {
+    name = "polkadot-node-keys"
+  }
+  data = var.polkadot_node_keys
+}
+
 resource "null_resource" "push_containers" {
 
   provisioner "local-exec" {
@@ -63,9 +61,9 @@ configMapGenerator:
 - name: polkadot-configmap
   literals:
       - ARCHIVE_URL="https://storage.googleapis.com/kusama-snapshot/ksmcc3-2020-03-27.tar.lz4"
-      - SENTRY_1_NODE_KEY="$Yw!nhSV>7&$)"
 EOK
 kubectl apply -k .
+rm kustomization.yaml
 EOF
 
   }

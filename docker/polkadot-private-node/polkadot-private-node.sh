@@ -26,6 +26,9 @@ get_node_id() {
 sentry_node_0_param=$(get_node_id "polkadot-sentry-node-0.polkadot-sentry-node")
 sentry_node_1_param=$(get_node_id "polkadot-sentry-node-1.polkadot-sentry-node")
 
+if [ -e /polkadot-node-keys/$(hostname) ]; then
+    node_key_param="--node-key $(cat /polkadot-node-keys/$(hostname))"
+fi
 
 /usr/local/bin/polkadot --validator --name "🐑 Hodl_dot_farm 🐑" --pruning=archive --wasm-execution Compiled \
          --reserved-only \
@@ -35,4 +38,5 @@ sentry_node_1_param=$(get_node_id "polkadot-sentry-node-1.polkadot-sentry-node")
          --rpc-cors=all \
          --telemetry-url 'wss://telemetry-backend.w3f.community/submit 0' \
          $sentry_node_0_param \
-         $sentry_node_1_param
+         $sentry_node_1_param \
+         $node_key_param

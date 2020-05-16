@@ -100,8 +100,14 @@ spec:
         - containerPort: 30333
           name: dot-p2p-port
         volumeMounts:
+        - name: polkadot-node-keys
+          mountPath: /polkadot-node-keys
         - name: polkadot-sentry-node-pv-claim
           mountPath: /polkadot
+      volumes:
+      - name: polkadot-node-keys
+        secret:
+          secretName: polkadot-node-keys
       initContainers:
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader

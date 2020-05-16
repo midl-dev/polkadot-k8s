@@ -102,12 +102,18 @@ spec:
         - containerPort: 9933
           name: dot-rpc-port
         volumeMounts:
+        - name: polkadot-node-keys
+          mountPath: /polkadot-node-keys
         - name: polkadot-private-node-pv-claim
           mountPath: /polkadot
         resources:
           limits:
             cpu: 0
         imagePullPolicy: Always
+      volumes:
+      - name: polkadot-node-keys
+        secret:
+          secretName: polkadot-node-keys
       initContainers:
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
