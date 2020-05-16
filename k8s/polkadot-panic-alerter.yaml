@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: polkadot-api-server
-        image: simplyvc/polkadot_api_server:1.9.1
+        image: simplyvc/polkadot_api_server:1.13.1
         volumeMounts:
         - name: polkadot-api-server-config-vol
           mountPath: /opt/polkadot_api_server/config
@@ -23,7 +23,7 @@ spec:
           limits:
             cpu: 0
       - name: panic-alerter
-        image: simplyvc/panic_polkadot:1.1.0
+        image: simplyvc/panic_polkadot:2.0.1
         resources:
           limits:
             cpu: 0

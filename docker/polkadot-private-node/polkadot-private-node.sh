@@ -10,7 +10,7 @@ get_node_id() {
     if [ -z $curl_node_id ]; then
         #Peer seems offline, getting peer id from persistent storage
         if [ -f /polkadot/polkadot-k8s/$1 ]; then
-            printf $(cat /polkadot/polkadot-k8s/$1)
+            printf  '%s\n' "--sentry-nodes /dns4/$1/tcp/30333/p2p/$(cat /polkadot/polkadot-k8s/$1)"
             #Else, peer unreachable and no persistent record available so we return nothing and expect liveness check to fail
         fi
     else
@@ -19,12 +19,13 @@ get_node_id() {
             mkdir -p /polkadot/polkadot-k8s
             printf $curl_node_id > /polkadot/polkadot-k8s/$1
         fi
-        printf $curl_node_id
+        printf '%s\n' "--sentry-nodes /dns4/$1/tcp/30333/p2p/$curl_node_id"
     fi
 }
 
-sentry_node_0_node_id=$(get_node_id "polkadot-sentry-node-0.polkadot-sentry-node")
-sentry_node_1_node_id=$(get_node_id "polkadot-sentry-node-1.polkadot-sentry-node")
+sentry_node_0_param=$(get_node_id "polkadot-sentry-node-0.polkadot-sentry-node")
+sentry_node_1_param=$(get_node_id "polkadot-sentry-node-1.polkadot-sentry-node")
+
 
 /usr/local/bin/polkadot --validator --name "🐑 Hodl_dot_farm 🐑" --pruning=archive --wasm-execution Compiled \
          --reserved-only \
@@ -33,5 +34,5 @@ sentry_node_1_node_id=$(get_node_id "polkadot-sentry-node-1.polkadot-sentry-node
          --unsafe-rpc-external \
          --rpc-cors=all \
          --telemetry-url 'wss://telemetry-backend.w3f.community/submit 0' \
-         --sentry-nodes /dns4/polkadot-sentry-node-0.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_0_node_id} \
-         --sentry-nodes /dns4/polkadot-sentry-node-1.polkadot-sentry-node/tcp/30333/p2p/${sentry_node_1_node_id}
+         $sentry_node_0_param \
+         $sentry_node_1_param
