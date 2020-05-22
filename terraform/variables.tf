@@ -7,6 +7,11 @@ variable "polkadot_archive_url" {
   description = "archive url"
 }
 
+variable "polkadot_node_ids" {
+  type = map
+  description = "map between hostname of polkadot nodes and their node ids. todo: derive from keys using a subkey container once https://github.com/paritytech/substrate/issues/5778 is implemented"
+}
+
 variable "polkadot_node_keys" {
   type = map
   description = "map between hostname of polkadot nodes and their node keys"

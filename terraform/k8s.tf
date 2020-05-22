@@ -9,6 +9,13 @@ resource "kubernetes_secret" "polkadot_node_keys" {
   data = var.polkadot_node_keys
 }
 
+resource "kubernetes_secret" "polkadot_node_ids" {
+  metadata {
+    name = "polkadot-node-ids"
+  }
+  data = var.polkadot_node_ids
+}
+
 resource "kubernetes_secret" "polkadot_panic_alerter_config_vol" {
   metadata {
     name = "polkadot-panic-alerter-config-vol"
