@@ -9,6 +9,19 @@ resource "kubernetes_secret" "polkadot_node_keys" {
   data = var.polkadot_node_keys
 }
 
+resource "kubernetes_secret" "polkadot_panic_alerter_config_vol" {
+  metadata {
+    name = "polkadot-panic-alerter-config-vol"
+  }
+  data = {
+    "internal_config_alerts.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_alerts.ini")}"
+    "internal_config_main.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_main.ini")}"
+    "user_config_main.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_main.ini", { "telegram_alert_chat_id" : var.telegram_alert_chat_id, "telegram_alert_chat_token": var.telegram_alert_chat_token } )}"
+    "user_config_nodes.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_nodes.ini", {"polkadot_stash_account_address": var.polkadot_stash_account_address})}"
+    "user_config_repos.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_repos.ini")}"
+  }
+}
+
 resource "null_resource" "push_containers" {
 
   provisioner "local-exec" {
@@ -34,6 +47,7 @@ EOF
 
 resource "null_resource" "apply" {
   provisioner "local-exec" {
+
     command = <<EOF
 
 cd ${path.module}/../k8s
@@ -63,7 +77,7 @@ configMapGenerator:
       - ARCHIVE_URL="https://storage.googleapis.com/kusama-snapshot/ksmcc3-2020-03-27.tar.lz4"
 EOK
 kubectl apply -k .
-rm kustomization.yaml
+rm -v kustomization.yaml
 EOF
 
   }
