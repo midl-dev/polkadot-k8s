@@ -48,24 +48,10 @@ spec:
       protocol: TCP
     - port: 30100
       protocol: TCP
-  - ports:
-    - port: 9933
-      protocol: TCP
-    to:
-    - podSelector:
-        matchLabels:
-          app: polkadot-private-node
   ingress:
   - ports:
     - port: 30333
       protocol: TCP
-  - ports:
-    - port: 9933
-      protocol: TCP
-    from:
-    - podSelector:
-        matchLabels:
-          app: polkadot-private-node
   - ports:
     - port: 9944
       protocol: TCP
