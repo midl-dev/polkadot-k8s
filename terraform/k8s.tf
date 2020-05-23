@@ -1,3 +1,10 @@
+module "terraform-gke-blockchain" {
+  path = "../../terraform-gke-blockchain"
+  org_id = var.org_id
+  billing_account = var.billing_account
+  project = var.project
+}
+
 # This file contains all the interactions with Kubernetes
 provider "kubernetes" {
 }
@@ -41,10 +48,10 @@ find ${path.module}/../docker -mindepth 1 -type d  -printf '%f\n'| while read co
   cat << EOY > cloudbuild.yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', "gcr.io/${var.project}/$container:latest", '.']
-images: ["gcr.io/${var.project}/$container:latest"]
+  args: ['build', '-t', "gcr.eio/${var.project}/$container:latest", '.']
+images: ["gcr.io/${module.terraform-gke-blockchain.project}/$container:latest"]
 EOY
-  gcloud builds submit --project ${var.project} --config cloudbuild.yaml .
+  gcloud builds submit --project ${module.terraform-gke-blockchain.project} --config cloudbuild.yaml .
   rm cloudbuild.yaml
   popd
 done
@@ -56,6 +63,7 @@ resource "null_resource" "apply" {
   provisioner "local-exec" {
 
     command = <<EOF
+gcloud container clusters get-credentials "${module.terraform-gke-blockchain.name}" --region="${module.terraform-gke-blockchain.location}" --project="${module.terraform-gke-blockchain.project}"
 
 cd ${path.module}/../k8s
 cat << EOK > kustomization.yaml
