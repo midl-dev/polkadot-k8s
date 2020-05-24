@@ -46,16 +46,12 @@ spec:
   - ports:
     - port: 30333
       protocol: TCP
-    - port: 9933
-      protocol: TCP
     to:
     - podSelector:
         matchLabels:
           app: polkadot-sentry-node
   ingress:
   - ports:
-    - port: 9933
-      protocol: TCP
     - port: 30333
       protocol: TCP
     from:
