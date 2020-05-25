@@ -1,5 +1,5 @@
 module "terraform-gke-blockchain" {
-  source = "empty-module"
+  source = "./empty_module"
 }
 
 # Query the client configuration for our current service account, which should

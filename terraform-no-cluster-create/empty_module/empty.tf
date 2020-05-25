@@ -4,3 +4,19 @@
 output "name" {
   value = ""
 }
+
+output "kubernetes_endpoint" {
+  value = ""
+}
+
+output "cluster_ca_certificate" {
+  value = ""
+}
+
+output "location" {
+  value = ""
+}
+
+output "project" {
+  value = ""
+}

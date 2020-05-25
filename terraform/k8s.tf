@@ -1,5 +1,18 @@
 data "google_project" "blockchain_project" {
-  project_id = var.project != "" ? var.project :  module.terraform-gke-blockchain.project
+  count      = var.kubernetes_config_context != "" ? 0 : 1
+  project_id = var.project
+}
+
+# Obtain the project_id from either the newly created project resource or
+# existing data project resource One will be populated and the other will be
+# null
+locals {
+  blockchain_project_id = element( concat(
+      data.google_project.blockchain_project.*.project_id,
+      [var.project]
+    ),
+    0,
+  )
 }
 
 resource "kubernetes_secret" "polkadot_node_keys" {
@@ -47,10 +60,10 @@ find ${path.module}/../docker -mindepth 1 -type d  -printf '%f\n'| while read co
   cat << EOY > cloudbuild.yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', "gcr.io/${data.google_project.blockchain_project.project_id}/$container:latest", '.']
-images: ["gcr.io/${data.google_project.blockchain_project.project_id}/$container:latest"]
+  args: ['build', '-t', "gcr.io/${local.blockchain_project_id}/$container:latest", '.']
+images: ["gcr.io/${local.blockchain_project_id}/$container:latest"]
 EOY
-  gcloud builds submit --project ${data.google_project.blockchain_project.project_id} --config cloudbuild.yaml .
+  gcloud builds submit --project ${local.blockchain_project_id} --config cloudbuild.yaml .
   rm cloudbuild.yaml
   popd
 done
@@ -63,7 +76,7 @@ resource "null_resource" "apply" {
 
     command = <<EOF
 if [ "${module.terraform-gke-blockchain.name} -ne "" ]; then
-  gcloud container clusters get-credentials "${module.terraform-gke-blockchain.name}" --region="${module.terraform-gke-blockchain.location}" --project="${module.terraform-gke-blockchain.project}"
+  gcloud container clusters get-credentials "${module.terraform-gke-blockchain.name}" --region="${module.terraform-gke-blockchain.location}" --project="${local.blockchain_project_id}"
 else
   kubectl config set-context "${var.kubernetes_config_context}"
 fi
@@ -80,13 +93,13 @@ resources:
 
 imageTags:
   - name: polkadot-private-node
-    newName: gcr.io/${var.project}/polkadot-private-node
+    newName: gcr.io/${local.blockchain_project_id}/polkadot-private-node
     newTag: latest
   - name: polkadot-sentry-node
-    newName: gcr.io/${var.project}/polkadot-sentry-node
+    newName: gcr.io/${local.blockchain_project_id}/polkadot-sentry-node
     newTag: latest
   - name: polkadot-archive-downloader
-    newName: gcr.io/${var.project}/polkadot-archive-downloader
+    newName: gcr.io/${local.blockchain_project_id}/polkadot-archive-downloader
     newTag: latest
 
 configMapGenerator:
