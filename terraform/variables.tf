@@ -1,6 +1,5 @@
 terraform {
   required_version = ">= 0.12.25"
-  experiments = [variable_validation]
 }
 
 variable "polkadot_archive_url" {
@@ -50,10 +49,6 @@ variable "kubernetes_config_context" {
   type = string
   description = "name of the kubernetes context where to create the deployment. Only set when you already have an existing cluster"
   default = ""
-  validation {
-    condition     = length(var.kubernetes_config_context) == 0
-    error_message = "Do not set a kubernetes context here. Go to the terraform-no-create-cluster folder to deploy on a pre-existing cluster."
-  }
 }
 
 variable "terraform_service_account_credentials" {
