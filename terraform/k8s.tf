@@ -1,8 +1,10 @@
 module "terraform-gke-blockchain" {
-  path = "../../terraform-gke-blockchain"
+  source = "../../terraform-gke-blockchain"
   org_id = var.org_id
   billing_account = var.billing_account
+  terraform_service_account_credentials = var.terraform_service_account_credentials
   project = var.project
+  project_prefix = "polkadot"
 }
 
 # This file contains all the interactions with Kubernetes
@@ -38,6 +40,12 @@ resource "kubernetes_secret" "polkadot_panic_alerter_config_vol" {
 
 resource "null_resource" "push_containers" {
 
+  triggers = {
+    host = md5(module.terraform-gke-blockchain.kubernetes_endpoint)
+    cluster_ca_certificate = md5(
+      module.terraform-gke-blockchain.cluster_ca_certificate,
+    )
+  }
   provisioner "local-exec" {
     command = <<EOF
 

@@ -34,10 +34,7 @@ A private validator node performs validation operations and generates blocks. It
 
 1. Download and install [Terraform](https://terraform.io)
 
-1. Download, install, and configure the [Google Cloud SDK](https://cloud.google.com/sdk/). You will need
-   to configure your default application credentials so Terraform can run. It
-   will run against your default project, but all resources are created in the
-   (new) project that it creates.
+1. Download, install, and configure the [Google Cloud SDK](https://cloud.google.com/sdk/).
 
 1. Install the [kubernetes
    CLI](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (aka
@@ -96,27 +93,24 @@ Enter your stash account identifier.
 
 If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `tar.xz4` format.
 
+## Terraform gcloud credentials (quick start)
+
+Using your Google account, active your Google Cloud access. A default project will be created.
+
+Login to gcloud using `gcloud auth login`
+
+A default project should have been created. Verify its ID with `gcloud projects list`. You may also create a dedicated project to deploy the cluster.
+
+In `terraform.tfvars` file created previously, add a `project` variable and set it to the project ID above.
+
+NOTE: for production deployments, the method above is not recommended. Instead, you should create a terraform service account in a dedicated project following [these instructions](doc/production-hardening.md).
+
 ## Deploy!
-
-You need a Google Cloud Organization. You will be able to create one as an individual by registering a domain name.
-
-You need to use a gcloud account as a user that has permission to create new projects. See [instructions for Terraform service account creation](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform) from Google.
-
-1. Collect the necessary information and put it in `terraform.tfvars`
 
 1. Run the following:
 
 ```
 cd terraform
-
-# The next 6 lines are only necessary if you are using a terraform service account.
-# Alternatively, create a project manually and pass it as parameter.
-export TF_VAR_org_id=YOUR_ORG_ID
-export TF_VAR_billing_account=YOUR_BILLING_ACCOUNT_ID
-export TF_ADMIN=${USER}-terraform-admin
-export TF_CREDS=~/.config/gcloud/${USER}-terraform-admin.json
-export GOOGLE_APPLICATION_CREDENTIALS=${TF_CREDS}
-export GOOGLE_PROJECT=${TF_ADMIN}
 
 terraform init
 terraform plan -out plan.out
@@ -124,10 +118,9 @@ terraform apply plan.out
 ```
 
 This will take time as it will:
-* create a Google Cloud project
 * create a Kubernetes cluster
-* build the necessary containers locally
-* spin up the public nodes and private baker nodes
+* build the necessary containers
+* spin up the sentry and validator nodes
 
 Apply an update
 ---------------
