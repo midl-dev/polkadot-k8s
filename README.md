@@ -132,6 +132,12 @@ This will take time as it will:
 
 After apply is complete, your `kubectl` command should point to the correct cluster. You can then issue `kubectl get pods` and observe that your Polkadot nodes are now alive and syncing.
 
+When you display the logs of your private node, you will see it syncing:
+
+```
+kubectl  logs -f polkadot-private-node-0 --tail=10
+```
+
 Apply an update
 ---------------
 
