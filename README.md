@@ -138,6 +138,10 @@ When you display the logs of your private node, you will see it syncing:
 kubectl  logs -f polkadot-private-node-0 --tail=10
 ```
 
+## I have a kubernetes cluster, I just want to deploy to it
+
+[Instructions here](docs/pre-existing-cluster.md)
+
 Apply an update
 ---------------
 
