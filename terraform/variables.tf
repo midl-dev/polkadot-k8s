@@ -7,6 +7,16 @@ variable "polkadot_archive_url" {
   description = "archive url"
 }
 
+variable "polkadot_telemetry_url" {
+  type        = string
+  description = "url of the telemetry server the polkadot nodes report to"
+}
+
+variable "polkadot_validator_name" {
+  type        = string
+  description = "name of the validator shown on the public telemetry server"
+}
+
 variable "polkadot_node_ids" {
   type = map
   description = "map between hostname of polkadot nodes and their node ids. todo: derive from keys using a subkey container once https://github.com/paritytech/substrate/issues/5778 is implemented"

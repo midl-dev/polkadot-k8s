@@ -108,6 +108,17 @@ spec:
           limits:
             cpu: 0
         imagePullPolicy: Always
+        env:
+        - name: TELEMETRY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: TELEMETRY_URL
+        - name: VALIDATOR_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: VALIDATOR_NAME
       volumes:
       - name: polkadot-node-ids
         secret:

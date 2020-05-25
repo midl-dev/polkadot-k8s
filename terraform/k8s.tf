@@ -107,6 +107,8 @@ configMapGenerator:
 - name: polkadot-configmap
   literals:
       - ARCHIVE_URL="${var.polkadot_archive_url}"
+      - TELEMETRY_URL="${var.polkadot_telemetry_url}"
+      - VALIDATOR_NAME="${var.polkadot_validator_name}"
 EOK
 kubectl apply -k .
 rm -v kustomization.yaml

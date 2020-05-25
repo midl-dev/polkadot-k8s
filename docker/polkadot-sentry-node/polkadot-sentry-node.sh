@@ -14,10 +14,14 @@ if [ -e /polkadot-node-keys/$(hostname) ]; then
     node_key_param="--node-key $(cat /polkadot-node-keys/$(hostname))"
 fi
 
-/usr/local/bin/polkadot --pruning=archive --wasm-execution Compiled \
+if [ ! -z "$TELEMETRY_URL" ]; then
+    telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 0\""
+fi
+
+eval /usr/local/bin/polkadot --pruning=archive --wasm-execution Compiled \
          --unsafe-ws-external \
          --unsafe-rpc-external \
          --rpc-methods=Unsafe \
          --rpc-cors=all \
-         --telemetry-url 'wss://telemetry-backend.w3f.community/submit 0' \
-         $sentry_param $node_key_param
+         $sentry_param $node_key_param \
+         $telemetry_url_param
