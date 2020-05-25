@@ -12,6 +12,13 @@ module "terraform-gke-blockchain" {
 data "google_client_config" "current" {
 }
 
+variable "kubernetes_config_context" {
+  validation {
+    condition     = length(var.kubernetes_config_context) = 0
+    error_message = "Do not set a kubernetes context here. Go to the terraform-no-create-cluster folder to deploy on a pre-existing cluster"
+  }
+}
+
 # This file contains all the interactions with Kubernetes
 provider "kubernetes" {
   load_config_file = false

@@ -1,3 +1,7 @@
+data "google_project" "blockchain_project" {
+  project_id = var.project != "" ? var.project :  module.terraform-gke-blockchain.project
+}
+
 resource "kubernetes_secret" "polkadot_node_keys" {
   metadata {
     name = "polkadot-node-keys"
@@ -43,10 +47,10 @@ find ${path.module}/../docker -mindepth 1 -type d  -printf '%f\n'| while read co
   cat << EOY > cloudbuild.yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', "gcr.io/${var.project}/$container:latest", '.']
-images: ["gcr.io/${module.terraform-gke-blockchain.project}/$container:latest"]
+  args: ['build', '-t', "gcr.io/${dta.google_project.blockchain_project.project_id}/$container:latest", '.']
+images: ["gcr.io/${data.google_project.blockchain_project.project_id}/$container:latest"]
 EOY
-  gcloud builds submit --project ${module.terraform-gke-blockchain.project} --config cloudbuild.yaml .
+  gcloud builds submit --project ${data.google_project.blockchain_project.project_id} --config cloudbuild.yaml .
   rm cloudbuild.yaml
   popd
 done
@@ -58,7 +62,11 @@ resource "null_resource" "apply" {
   provisioner "local-exec" {
 
     command = <<EOF
-gcloud container clusters get-credentials "${module.terraform-gke-blockchain.name}" --region="${module.terraform-gke-blockchain.location}" --project="${module.terraform-gke-blockchain.project}"
+if [ "${module.terraform-gke-blockchain.name} -ne "" ]; then
+  gcloud container clusters get-credentials "${module.terraform-gke-blockchain.name}" --region="${module.terraform-gke-blockchain.location}" --project="${module.terraform-gke-blockchain.project}"
+else
+  kubectl config set-context "${var.kubernetes_config_context}"
+fi
 
 cd ${path.module}/../k8s
 cat << EOK > kustomization.yaml

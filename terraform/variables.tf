@@ -45,6 +45,11 @@ variable "billing_account" {
   default = ""
 }
 
+variable "kubernetes_config_context" {
+  type = string
+  description = "name of the kubernetes context where to create the deployment. Only set when you already have an existing cluster"
+}
+
 variable "terraform_service_account_credentials" {
   type = string
   description = "path to terraform service account file, created following the instructions in https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform"
