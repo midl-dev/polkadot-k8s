@@ -47,7 +47,7 @@ find ${path.module}/../docker -mindepth 1 -type d  -printf '%f\n'| while read co
   cat << EOY > cloudbuild.yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', "gcr.io/${dta.google_project.blockchain_project.project_id}/$container:latest", '.']
+  args: ['build', '-t', "gcr.io/${data.google_project.blockchain_project.project_id}/$container:latest", '.']
 images: ["gcr.io/${data.google_project.blockchain_project.project_id}/$container:latest"]
 EOY
   gcloud builds submit --project ${data.google_project.blockchain_project.project_id} --config cloudbuild.yaml .
