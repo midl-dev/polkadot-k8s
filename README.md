@@ -12,6 +12,12 @@ Features:
 * node monitoring with [PANIC polkadot alerter](https://github.com/SimplyVC/panic_polkadot)
 * deploy everything in just one command
 
+TODO:
+
+* automated payout cronjob
+* support for on-prem remote signer whenever available
+* node key autogeneration
+
 Brought to you by MIDL.dev
 --------------------------
 

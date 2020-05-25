@@ -16,10 +16,7 @@ data "google_client_config" "current" {
 provider "kubernetes" {
   load_config_file = false
   host             = module.terraform-gke-blockchain.kubernetes_endpoint
-
-  cluster_ca_certificate = base64decode(
-    module.terraform-gke-blockchain.cluster_ca_certificate,
-  )
+  cluster_ca_certificate = module.terraform-gke-blockchain.cluster_ca_certificate
   token = data.google_client_config.current.access_token
 }
 
@@ -68,7 +65,7 @@ find ${path.module}/../docker -mindepth 1 -type d  -printf '%f\n'| while read co
   cat << EOY > cloudbuild.yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', "gcr.eio/${var.project}/$container:latest", '.']
+  args: ['build', '-t', "gcr.io/${var.project}/$container:latest", '.']
 images: ["gcr.io/${module.terraform-gke-blockchain.project}/$container:latest"]
 EOY
   gcloud builds submit --project ${module.terraform-gke-blockchain.project} --config cloudbuild.yaml .
