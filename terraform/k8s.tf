@@ -106,7 +106,7 @@ imageTags:
 configMapGenerator:
 - name: polkadot-configmap
   literals:
-      - ARCHIVE_URL="https://storage.googleapis.com/kusama-snapshot/ksmcc3-2020-03-27.tar.lz4"
+      - ARCHIVE_URL="${var.polkadot_archive_url}"
 EOK
 kubectl apply -k .
 rm -v kustomization.yaml

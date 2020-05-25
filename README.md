@@ -128,6 +128,10 @@ This will take time as it will:
 * build the necessary containers
 * spin up the sentry and validator nodes
 
+## Connect to the cluster
+
+After apply is complete, your `kubectl` command should point to the correct cluster. You can then issue `kubectl get pods` and observe that your Polkadot nodes are now alive and syncing.
+
 Apply an update
 ---------------
 
@@ -141,3 +145,11 @@ terraform apply plan.out
 This will rebuild the containers locally, then do a `kubectl apply` to push the most recent changes to your cluster.
 
 The daemons will restart after some time. However, you may kill the pods to restart them immediately.
+
+## Wrapping up
+
+To delete everything and stop all the cloud costs, issue the command:
+
+```
+terraform destroy
+```
