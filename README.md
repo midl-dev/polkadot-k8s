@@ -59,8 +59,6 @@ All custom values unique to your deployment are set as terraform variables. You 
 
 A simple way is to populate a file called `terraform.tfvars` in the terraform folder.
 
-This file is in `.gitignore`, however make sure to never commit it.
-
 NOTE: `terraform.tfvars` is not recommended for a production deployment. See [production hardening](docs/production-hardening.md).
 
 ### Network (libp2p) keys
@@ -97,6 +95,30 @@ Enter your stash account identifier.
 ### Archive URL (optional)
 
 If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `tar.xz4` format.
+
+### Recap : full example of terraform.tfvars file
+
+Do not use exactly this file: the node ids should never exist in duplicate in the network.
+
+```
+project="beaming-essence-301841"
+polkadot_archive_url="https://ipfs.io/ipfs/Qma3fM33cw4PGiw28SidqhFi3CXRa2tpywqLmhYveabEYQ?filename=Qma3fM33cw4PGiw28SidqhFi3CXRa2tpywqLmhYveabEYQ"
+polkadot_validator_name="Hello from k8s!"
+polkadot_telemetry_url="wss://telemetry-backend.w3f.community/submit"
+polkadot_node_ids = {
+  "polkadot-private-node-0": "QmXjjWVEqH2e4yM3amzAC4buJvgkd2B6EfnoHprQ2jSVc7",
+  "polkadot-sentry-node-0": "QmSiTWRDU44yUK8wG3xhS1XYfUYJqskVtf5eUsVVKYc3M4",
+  "polkadot-sentry-node-1": "Qmchxx8Q3cywVkdDG43J2qR7Bcpj9XFty8Tm2BgRH2efhd"
+}
+polkadot_node_keys = {
+  "polkadot-private-node-0": "b5ca09a5dccb48d5c7915f24223454fe1a557383ba0b1560cc3ed919a6e9dec5",
+  "polkadot-sentry-node-0": "dcf609b50868ffe379d4a992cf866deba8ad84ecca24853bacba1171ae7cdf22",
+  "polkadot-sentry-node-1": "ca62cb1bae8c84090f2e20dae81c79f8843fb75df065c8026e4603b85b48729f"
+}
+telegram_alert_chat_id="-486750097"
+telegram_alert_chat_token="1273059891:ABEzzzzzzzzzzzzzzzzzzzzzzzz"
+polkadot_stash_account_address = "D3bm5iAeiRezwZp4tWTX4sZN3u8nXy2Fo21U59smznYHu3F"
+```
 
 ## Terraform gcloud credentials
 
