@@ -1,5 +1,5 @@
 module "terraform-gke-blockchain" {
-  source = "../../terraform-gke-blockchain"
+  source = "github.com/midl-dev/terraform-gke-blockchain"
   org_id = var.org_id
   billing_account = var.billing_account
   terraform_service_account_credentials = var.terraform_service_account_credentials
