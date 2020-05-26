@@ -6,11 +6,10 @@ This project deploys a fully featured, best practices Kusama validator setup on 
 
 Features:
 
-* GKE supported out-of-the-box today
 * high availability and geographical distribution
 * download and import a snapshot for faster synchronization of the node
 * node monitoring with [PANIC polkadot alerter](https://github.com/SimplyVC/panic_polkadot)
-* deploy everything in just one command
+* deploy everything in just one command - no prior knowledge of Kubernetes required
 
 TODO:
 
@@ -62,7 +61,7 @@ A simple way is to populate a file called `terraform.tfvars` in the terraform fo
 
 This file is in `.gitignore`, however make sure to never commit it.
 
-For a production deployment, consider using a secure key-value store such as Hashicorp Vault.
+NOTE: `terraform.tfvars` is not recommended for a production deployment. See [production hardening](docs/production-hardening.md).
 
 ### Network (libp2p) keys
 
@@ -99,7 +98,7 @@ Enter your stash account identifier.
 
 If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `tar.xz4` format.
 
-## Terraform gcloud credentials (quick start)
+## Terraform gcloud credentials
 
 Using your Google account, active your Google Cloud access. A default project will be created.
 
@@ -138,7 +137,7 @@ When you display the logs of your private node, you will see it syncing:
 kubectl  logs -f polkadot-private-node-0 --tail=10
 ```
 
-## I have a kubernetes cluster, I just want to deploy to it
+## I have a kubernetes cluster already, I just want to deploy to it
 
 [Instructions here](docs/pre-existing-cluster.md)
 
@@ -158,7 +157,7 @@ The daemons will restart after some time. However, you may kill the pods to rest
 
 ## Wrapping up
 
-To delete everything and stop all the cloud costs, issue the command:
+To delete everything and terminate all the charges, issue the command:
 
 ```
 terraform destroy
