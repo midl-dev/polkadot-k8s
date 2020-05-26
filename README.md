@@ -20,9 +20,9 @@ TODO:
 Brought to you by MIDL.dev
 --------------------------
 
-![MIDL.dev](midl-dev-logo.png)
+<img src="midl-dev-logo.png" alt="MIDL.dev" height="100"/>
 
-We can deploy and manage a complete Polkadot or Kusama validator infrastructure for you. [Hire us](https://midl.dev).
+We help you deploy and manage a complete Polkadot or Kusama validator infrastructure for you. [Hire us](https://midl.dev).
 
 Architecture
 ------------
