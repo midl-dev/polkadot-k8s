@@ -7,6 +7,16 @@ parameters:
   type: pd-ssd
 allowVolumeExpansion: true
 ---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: repd-central1-b-f
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  replication-type: regional-pd
+  zones: us-central1-b, us-central1-f
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -146,7 +156,7 @@ spec:
       name: polkadot-private-node-pv-claim
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: local-ssd
+      storageClassName: repd-central1-b-f
       resources:
         requests:
           storage: 50Gi
