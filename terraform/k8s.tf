@@ -1,5 +1,5 @@
 data "google_project" "blockchain_project" {
-  count      = var.kubernetes_config_context != "" ? 0 : 1
+  count      = ((var.kubernetes_config_context != "") || (var.project == "")) ? 0 : 1
   project_id = var.project
 }
 
