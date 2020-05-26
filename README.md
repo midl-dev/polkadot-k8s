@@ -45,9 +45,6 @@ A private validator node performs validation operations and generates blocks. It
    CLI](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (aka
    `kubectl`)
 
-## Become a validator
-
-
 ## Bond your tokens
 
 Follow [these instructions](https://wiki.polkadot.network/docs/en/maintain-guides-how-to-validate-kusama#bond-ksm) to bond your KSM.
@@ -87,15 +84,29 @@ polkadot_node_keys = {
 }
 ```
 
-### Stash account
+### PANIC alerter variables
 
-Create the stash and controller accounts for your validator node.
+PANIC performs monitoring of your cluster and alerts you on a telegram channel when something is wrong with your nodes.
 
-Enter your stash account identifier.
+Enter your stash account identifier under `polkadot_stash_account_address`. PANIC will monitor validation operations of this address.
+
+Create a telegram channel and a bot that can post to it. Populate `telegram_alert_chat_id` and `telegram_alert_chat_token`
 
 ### Archive URL (optional)
 
-If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `tar.xz4` format.
+If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `7z` format.
+
+### Google Cloud project
+
+Using your Google account, active your Google Cloud access.
+
+Login to gcloud using `gcloud auth login`
+
+A default project should have been created. Verify its ID with `gcloud projects list`. You may also create a dedicated project to deploy the cluster.
+
+Set the project id in the `project` terraform variable.
+
+NOTE: for production deployments, the method above is not recommended. Instead, you should have the project auto-created by a Terraform service account following [these instructions](docs/production-hardening.md).
 
 ### Recap : full example of terraform.tfvars file
 
@@ -121,18 +132,6 @@ telegram_alert_chat_token="1273059891:ABEzzzzzzzzzzzzzzzzzzzzzzzz"
 polkadot_stash_account_address = "D3bm5iAeiRezwZp4tWTX4sZN3u8nXy2Fo21U59smznYHu3F"
 ```
 
-## Terraform gcloud credentials
-
-Using your Google account, active your Google Cloud access. A default project will be created.
-
-Login to gcloud using `gcloud auth login`
-
-A default project should have been created. Verify its ID with `gcloud projects list`. You may also create a dedicated project to deploy the cluster.
-
-In `terraform.tfvars` file created previously, add a `project` variable and set it to the project ID above.
-
-NOTE: for production deployments, the method above is not recommended. Instead, you should create a terraform service account in a dedicated project following [these instructions](doc/production-hardening.md).
-
 ## Deploy!
 
 1. Run the following:
@@ -148,7 +147,9 @@ terraform apply plan.out
 This will take time as it will:
 * create a Kubernetes cluster
 * build the necessary containers
+* download and unzip the archives if applicable
 * spin up the sentry and validator nodes
+* sync the network
 
 ## Connect to the cluster
 
@@ -185,3 +186,5 @@ To delete everything and terminate all the charges, issue the command:
 ```
 terraform destroy
 ```
+
+Alternatively, go to the GCP console and delete the project.
