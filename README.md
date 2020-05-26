@@ -172,6 +172,7 @@ kubectl  logs -f polkadot-private-node-0 --tail=10
 ### How to check your validator node is running ?
 
 * connect to your telemetry server and search for your node by name
+* look at alerts in the PANIC telegram channel
 * set up a websocket tunnel to your local host
 
 ```
