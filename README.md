@@ -47,6 +47,15 @@ The validator node uses a [Regional Persistent Disk](https://cloud.google.com/co
    CLI](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (aka
    `kubectl`)
 
+## Costs
+
+Deploying will incur Google Compute Engine charges, specifically:
+
+* virtual machines
+* regional persistent SSD storage
+* network ingress
+* NAT forwarding
+
 ## Bond your tokens
 
 Follow [these instructions](https://wiki.polkadot.network/docs/en/maintain-guides-how-to-validate-kusama#bond-ksm) to bond your KSM.
