@@ -14,7 +14,7 @@ else
     mkdir -p /polkadot/.local/share/polkadot/chains/ksmcc3/
     echo "Will download $ARCHIVE_URL"
     curl $ARCHIVE_URL -o /polkadot/polkadot_archive.7z
-    7z x /polkadot/polkadot_archive.7z --o/polkadot/.local/share/polkadot/chains/ksmcc3
+    7z x /polkadot/polkadot_archive.7z -o/polkadot/.local/share/polkadot/chains/ksmcc3
     rm -v /polkadot/polkadot_archive.7z
     chmod -R 777 /polkadot/.local/
     chown -R 1000:1000 /polkadot/.local/
