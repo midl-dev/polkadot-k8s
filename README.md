@@ -163,3 +163,5 @@ To delete everything and stop all the cloud costs, issue the command:
 ```
 terraform destroy
 ```
+
+Alternatively, go to the Google Cloud Resource Manager and destroy the project where you created the cluster.
