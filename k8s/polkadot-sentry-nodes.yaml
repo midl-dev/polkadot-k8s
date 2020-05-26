@@ -119,8 +119,6 @@ spec:
         volumeMounts:
         - name: polkadot-sentry-node-pv-claim
           mountPath: /polkadot
-        args:
-        - "$(ARCHIVE_URL)"
         env:
         - name: ARCHIVE_URL
           valueFrom:

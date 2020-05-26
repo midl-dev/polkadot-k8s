@@ -129,8 +129,6 @@ spec:
       initContainers:
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
-        args:
-        - "$(ARCHIVE_URL)"
         env:
         - name: ARCHIVE_URL
           valueFrom:
