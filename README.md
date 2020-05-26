@@ -47,17 +47,18 @@ A private validator node performs validation operations and generates blocks. It
 
 ## Become a validator
 
-There is an official guide on [how to validate on Kusama]. You will need to follow sections of this guide, but not everything. Some of the actions are done automatically by our code.
 
 ## Bond your tokens
 
 Follow [these instructions](https://wiki.polkadot.network/docs/en/maintain-guides-how-to-validate-kusama#bond-ksm) to bond your KSM.
 
+NOTE: the link above points to the official guide about [how to validate on Kusama](https://wiki.polkadot.network/docs/en/maintain-guides-how-to-validate-kusama). Not every action in this guide needs to be performed. For example, there is no need to build binaries.
+
 ## Populate terraform variables
 
 All custom values unique to your deployment are set as terraform variables. You must populate these variables manually before deploying the setup.
 
-A simple way is to populate a file called `terraform.tfvars` in the terraform folder.
+A simple way is to populate a file called `terraform.tfvars` in the `terraform` folder.
 
 NOTE: `terraform.tfvars` is not recommended for a production deployment. See [production hardening](docs/production-hardening.md).
 
