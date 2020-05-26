@@ -14,7 +14,7 @@ Features:
 TODO:
 
 * automated payout cronjob
-* support for on-prem remote signer whenever available
+* support for on-prem remote signer [whenever available](https://github.com/paritytech/substrate/issues/4689)
 * node key autogeneration
 
 Brought to you by MIDL.dev
@@ -32,6 +32,8 @@ This is a Kubernetes private cluster with two nodes located in two Google Cloud 
 The sentry nodes are a StatefulSet of two pods, one in each zone. They connect to the peer-to-peer network.
 
 A private validator node performs validation operations and generates blocks. It connects exclusively to the two public nodes belonging to the cluster.
+
+The validator node uses a [Regional Persistent Disk](https://cloud.google.com/compute/docs/disks/#repds) so it can be respun quickly in the other node from the pool if the first node goes offline for any reason, for example base OS upgrade.
 
 # How to deploy
 
@@ -92,6 +94,12 @@ Enter your stash account identifier under `polkadot_stash_account_address`. PANI
 
 Create a telegram channel and a bot that can post to it. Populate `telegram_alert_chat_id` and `telegram_alert_chat_token`
 
+### Telemetry
+
+Set the `polkadot_telemetry_url` variable to the telemetry server websocket endpoint (that you would pass to polkadot's `--telemetry-url` option)
+
+Set the `polkadot_validator_name` to your validator name as you want it to appear on telemetry (maps to polkadot's `--name` parameter).
+
 ### Archive URL (optional)
 
 If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `7z` format.
@@ -151,7 +159,7 @@ This will take time as it will:
 * spin up the sentry and validator nodes
 * sync the network
 
-## Connect to the cluster
+### Connect to the cluster
 
 After apply is complete, your `kubectl` command should point to the correct cluster. You can then issue `kubectl get pods` and observe that your Polkadot nodes are now alive and syncing.
 
@@ -160,6 +168,26 @@ When you display the logs of your private node, you will see it syncing:
 ```
 kubectl  logs -f polkadot-private-node-0 --tail=10
 ```
+
+### How to check your validator node is running ?
+
+* connect to your telemetry server and search for your node by name
+* set up a websocket tunnel to your local host
+
+```
+kubectl port-forward polkadot-private-node-0 9944:9944
+```
+
+Then go to the [Polkadot Js app](https://polkadot.js.org/apps/#/) and configure it to point to `localhost:9944`. You should see your node syncing.
+
+### Inject session keys
+
+[Follow instructions](https://wiki.polkadot.network/docs/en/maintain-guides-how-to-validate-kusama#set-session-keys) to inject session keys using the Polkadot Js app.
+
+### Validate
+
+[Follow instructions](https://wiki.polkadot.network/docs/en/maintain-guides-how-to-validate-kusama#validate)
+
 
 ## I have a kubernetes cluster already, I just want to deploy to it
 
