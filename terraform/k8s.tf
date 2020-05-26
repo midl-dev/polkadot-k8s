@@ -75,7 +75,7 @@ resource "null_resource" "apply" {
   provisioner "local-exec" {
 
     command = <<EOF
-if [ "${module.terraform-gke-blockchain.name} -ne "" ]; then
+if [ "${module.terraform-gke-blockchain.name}" != "" ]; then
   gcloud container clusters get-credentials "${module.terraform-gke-blockchain.name}" --region="${module.terraform-gke-blockchain.location}" --project="${local.blockchain_project_id}"
 else
   kubectl config set-context "${var.kubernetes_config_context}"
