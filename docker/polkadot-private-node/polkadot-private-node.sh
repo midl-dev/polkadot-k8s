@@ -27,11 +27,13 @@ if [ ! -z "$TELEMETRY_URL" ]; then
     telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 0\""
 fi
 
+# unsafe flags are due to polkadot panic alerter needing to connect to the node with rpc
 eval /usr/local/bin/polkadot --validator --pruning=archive --wasm-execution Compiled \
          --reserved-only \
          --prometheus-external \
          --unsafe-ws-external \
          --unsafe-rpc-external \
+         --rpc-methods unsafe \
          --rpc-cors=all \
          $sentry_node_0_param \
          $sentry_node_1_param \
