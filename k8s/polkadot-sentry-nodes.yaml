@@ -92,17 +92,9 @@ spec:
           mountPath: /polkadot-node-keys
         - name: polkadot-sentry-node-pv-claim
           mountPath: /polkadot
-        env:
-        - name: TELEMETRY_URL
-          valueFrom:
-            configMapKeyRef:
-              name: polkadot-configmap
-              key: TELEMETRY_URL
-        - name: VALIDATOR_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: polkadot-configmap
-              key: VALIDATOR_NAME
+        envFrom:
+        - configMapRef:
+            name: polkadot-configmap
         resources:
           limits:
             cpu: 0

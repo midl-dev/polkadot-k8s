@@ -18,10 +18,15 @@ if [ ! -z "$TELEMETRY_URL" ]; then
     telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 0\""
 fi
 
+if [ ! -z "$CHAIN" ]; then
+    chain_param="--chain \"$CHAIN\""
+fi
+
 eval /usr/local/bin/polkadot --pruning=archive --wasm-execution Compiled \
          --unsafe-ws-external \
          --unsafe-rpc-external \
          --rpc-methods=Unsafe \
          --rpc-cors=all \
          $sentry_param $node_key_param \
-         $telemetry_url_param
+         $telemetry_url_param \
+         $chain_param
