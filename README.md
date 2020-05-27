@@ -160,8 +160,14 @@ polkadot_node_keys = {
 }
 telegram_alert_chat_id="-486750097"
 telegram_alert_chat_token="1273059891:ABEzzzzzzzzzzzzzzzzzzzzzzzz"
-polkadot_stash_account_address = "D3bm5iAeiRezwZp4tWTX4sZN3u8nXy2Fo21U59smznYHu3F"
+polkadot_stash_account_address = "D3bm5iAeeRezwZp4tWTX4sZN9u8nXy2Fo21U59smznYHF3F"
 ```
+
+The example above would:
+* deploy a validator setup in the Google Cloud project named `beaming-essence-301841`
+* download a kusama snapshot from IPFS
+* report to telemetry server `w3f.community` under the name `Hello from k8s!`
+* send alerts to a telegram chat
 
 ## Deploy!
 
