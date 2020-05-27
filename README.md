@@ -1,13 +1,12 @@
 # Polkadot-k8s
 
-[Polkadot](https://polkadot.network) is a proof-of-stake blokchain protocol that has yet to launch. At the moment, its wild cousin, [Kusama](https://kusama.network) is live.
-
-This project deploys a fully featured, best practices Kusama validator setup on Google Kubernetes Engine.
+This project deploys a fully featured, best practices [Polkadot](https://polkadot.network) or [Kusama](https://kusama.network) validator setup on Google Kubernetes Engine.
 
 Features:
 
+* compatible with Kusama and Polkadot
 * high availability and geographical distribution
-* download and import a snapshot for faster synchronization of the node
+* download and import a [pre-synced database](https://dotleap.com/how-to-import-a-pre-synced-kusama-database/) for faster synchronization of the node
 * node monitoring with [PANIC polkadot alerter](https://github.com/SimplyVC/panic_polkadot)
 * deploy everything in just one command - no prior knowledge of Kubernetes required
 
@@ -35,6 +34,15 @@ A private validator node performs validation operations and generates blocks. It
 
 The validator node uses a [Regional Persistent Disk](https://cloud.google.com/compute/docs/disks/#repds) so it can be respun quickly in the other node from the pool if the first node goes offline for any reason, for example base OS upgrade.
 
+## Costs
+
+Deploying will incur Google Compute Engine charges, specifically:
+
+* virtual machines
+* regional persistent SSD storage
+* network ingress
+* NAT forwarding
+
 # How to deploy
 
 ## Prerequisites
@@ -47,14 +55,19 @@ The validator node uses a [Regional Persistent Disk](https://cloud.google.com/co
    CLI](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (aka
    `kubectl`)
 
-## Costs
+## Authentication
 
-Deploying will incur Google Compute Engine charges, specifically:
+Using your Google account, active your Google Cloud access.
 
-* virtual machines
-* regional persistent SSD storage
-* network ingress
-* NAT forwarding
+Login to gcloud using `gcloud auth login`
+
+Set up [Google Default Application Credentials](https://cloud.google.com/docs/authentication/production) by issuing the command:
+
+```
+gcloud auth application-default login
+```
+
+NOTE: for production deployments, the method above is not recommended. Instead, you should use a Terraform service account following [these instructions](docs/production-hardening.md).
 
 ## Bond your tokens
 
@@ -103,7 +116,9 @@ Enter your stash account identifier under `polkadot_stash_account_address`. PANI
 
 Create a telegram channel and a bot that can post to it. Populate `telegram_alert_chat_id` and `telegram_alert_chat_token`
 
-### Telemetry
+### Polkadot utility parameters
+
+Set the `chain` variable to the desired network you want to launch (`polkadot` or `kusama`).
 
 Set the `polkadot_telemetry_url` variable to the telemetry server websocket endpoint (that you would pass to polkadot's `--telemetry-url` option)
 
@@ -113,17 +128,15 @@ Set the `polkadot_validator_name` to your validator name as you want it to appea
 
 If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `7z` format.
 
+See [a resource on how to get a pre-synced archive databsae for Kusama](https://dotleap.com/how-to-import-a-pre-synced-kusama-database/).
+
 ### Google Cloud project
 
-Using your Google account, active your Google Cloud access.
-
-Login to gcloud using `gcloud auth login`
-
-A default project should have been created. Verify its ID with `gcloud projects list`. You may also create a dedicated project to deploy the cluster.
+A default Google Cloud project should have been created when you activated your account. Verify its ID with `gcloud projects list`. You may also create a dedicated project to deploy the cluster.
 
 Set the project id in the `project` terraform variable.
 
-NOTE: for production deployments, the method above is not recommended. Instead, you should have the project auto-created by a Terraform service account following [these instructions](docs/production-hardening.md).
+NOTE: if you created a [terraform service account](docs/production-hardening.md), leave this variable empty.
 
 ### Recap : full example of terraform.tfvars file
 
@@ -133,6 +146,7 @@ Do not use exactly this file: the node ids should never exist in duplicate in th
 project="beaming-essence-301841"
 polkadot_archive_url="https://ipfs.io/ipfs/Qma3fM33cw4PGiw28SidqhFi3CXRa2tpywqLmhYveabEYQ?filename=Qma3fM33cw4PGiw28SidqhFi3CXRa2tpywqLmhYveabEYQ"
 polkadot_validator_name="Hello from k8s!"
+chain="kusama"
 polkadot_telemetry_url="wss://telemetry-backend.w3f.community/submit"
 polkadot_node_ids = {
   "polkadot-private-node-0": "QmXjjWVEqH2e4yM3amzAC4buJvgkd2B6EfnoHprQ2jSVc7",
@@ -167,6 +181,14 @@ This will take time as it will:
 * download and unzip the archives if applicable
 * spin up the sentry and validator nodes
 * sync the network
+
+## Get kubectl credentials
+
+After deploy is complete, issue the following command to get the kubernetes credentials for the cluster you just created:
+
+```
+gcloud container clusters get-credentials blockchain --region us-central1
+```
 
 ### Connect to the cluster
 
