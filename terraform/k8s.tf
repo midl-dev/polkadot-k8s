@@ -1,45 +1,13 @@
-data "google_project" "blockchain_project" {
-  count      = var.kubernetes_config_context != "" ? 0 : 1
-  project_id = var.project
-}
-
 # Obtain the project_id from either the newly created project resource or
 # existing data project resource One will be populated and the other will be
 # null
 locals {
   blockchain_project_id = element( concat(
-      data.google_project.blockchain_project.*.project_id,
+      module.terraform-gke-blockchain.project == "" ? [] : [ module.terraform-gke-blockchain.project ],
       [var.project]
     ),
     0,
   )
-}
-
-resource "kubernetes_secret" "polkadot_node_keys" {
-  metadata {
-    name = "polkadot-node-keys"
-  }
-  data = var.polkadot_node_keys
-}
-
-resource "kubernetes_secret" "polkadot_node_ids" {
-  metadata {
-    name = "polkadot-node-ids"
-  }
-  data = var.polkadot_node_ids
-}
-
-resource "kubernetes_secret" "polkadot_panic_alerter_config_vol" {
-  metadata {
-    name = "polkadot-panic-alerter-config-vol"
-  }
-  data = {
-    "internal_config_alerts.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_alerts.ini")}"
-    "internal_config_main.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_main.ini")}"
-    "user_config_main.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_main.ini", { "telegram_alert_chat_id" : var.telegram_alert_chat_id, "telegram_alert_chat_token": var.telegram_alert_chat_token } )}"
-    "user_config_nodes.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_nodes.ini", {"polkadot_stash_account_address": var.polkadot_stash_account_address})}"
-    "user_config_repos.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_repos.ini")}"
-  }
 }
 
 resource "null_resource" "push_containers" {
@@ -69,6 +37,36 @@ EOY
 done
 EOF
   }
+}
+
+resource "kubernetes_secret" "polkadot_node_keys" {
+  metadata {
+    name = "polkadot-node-keys"
+  }
+  data = var.polkadot_node_keys
+  depends_on = [ null_resource.push_containers ]
+}
+
+resource "kubernetes_secret" "polkadot_node_ids" {
+  metadata {
+    name = "polkadot-node-ids"
+  }
+  data = var.polkadot_node_ids
+  depends_on = [ null_resource.push_containers ]
+}
+
+resource "kubernetes_secret" "polkadot_panic_alerter_config_vol" {
+  metadata {
+    name = "polkadot-panic-alerter-config-vol"
+  }
+  data = {
+    "internal_config_alerts.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_alerts.ini")}"
+    "internal_config_main.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_main.ini")}"
+    "user_config_main.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_main.ini", { "telegram_alert_chat_id" : var.telegram_alert_chat_id, "telegram_alert_chat_token": var.telegram_alert_chat_token } )}"
+    "user_config_nodes.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_nodes.ini", {"polkadot_stash_account_address": var.polkadot_stash_account_address})}"
+    "user_config_repos.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_repos.ini")}"
+  }
+  depends_on = [ null_resource.push_containers ]
 }
 
 resource "null_resource" "apply" {
@@ -108,6 +106,7 @@ configMapGenerator:
       - ARCHIVE_URL="${var.polkadot_archive_url}"
       - TELEMETRY_URL="${var.polkadot_telemetry_url}"
       - VALIDATOR_NAME="${var.polkadot_validator_name}"
+      - CHAIN="${var.chain}"
 EOK
 kubectl apply -k .
 rm -v kustomization.yaml

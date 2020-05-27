@@ -2,6 +2,12 @@ terraform {
   required_version = ">= 0.12"
 }
 
+variable "chain" {
+  type = string
+  description = "The chain (can be polkadot, kusama)"
+  default = "polkadot"
+}
+
 variable "polkadot_archive_url" {
   type        = string
   description = "archive url"
