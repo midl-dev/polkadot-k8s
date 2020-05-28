@@ -49,6 +49,8 @@ Deploying will incur Google Compute Engine charges, specifically:
 
 # How to deploy
 
+*WARNING: Polkadot/Kusama tokens have value. Use judgement and care in your network interactions, otherwise loss of funds may occur.*
+
 ## Prerequisites
 
 1. Download and install [Terraform](https://terraform.io)
@@ -191,14 +193,6 @@ This will take time as it will:
 * download and unzip the archives if applicable
 * spin up the sentry and validator nodes
 * sync the network
-
-## Get kubectl credentials
-
-After deploy is complete, issue the following command to get the kubernetes credentials for the cluster you just created:
-
-```
-gcloud container clusters get-credentials blockchain --region us-central1
-```
 
 ### Connect to the cluster
 
