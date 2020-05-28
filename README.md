@@ -124,6 +124,8 @@ Create a telegram channel and a bot that can post to it. Populate `telegram_aler
 
 ### Polkadot utility parameters
 
+Set the `polkadot_version` to the desired version of polkadot container.
+
 Set the `chain` variable to the desired network you want to launch (`polkadot` or `kusama`).
 
 Set the `polkadot_telemetry_url` variable to the telemetry server websocket endpoint (that you would pass to polkadot's `--telemetry-url` option)

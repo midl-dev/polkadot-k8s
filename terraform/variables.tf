@@ -33,6 +33,11 @@ variable "polkadot_node_keys" {
   description = "map between hostname of polkadot nodes and their node keys"
 }
 
+variable "polkadot_version" {
+  type = string
+  description = "Version of the polkadot containers to use"
+}
+
 variable "project" {
   type        = string
   default     = ""

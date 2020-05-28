@@ -13,6 +13,8 @@ resource "null_resource" "push_containers" {
 find ${path.module}/../docker -mindepth 1 -type d  -printf '%f\n'| while read container; do
   
   pushd ${path.module}/../docker/$container
+  cp Dockerfile.template Dockerfile
+  sed -i "s/((polkadot_version))/${var.polkadot_version}/" Dockerfile
   cat << EOY > cloudbuild.yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
@@ -20,6 +22,7 @@ steps:
 images: ["gcr.io/${module.terraform-gke-blockchain.project}/$container:latest"]
 EOY
   gcloud builds submit --project ${module.terraform-gke-blockchain.project} --config cloudbuild.yaml .
+  rm -v Dockerfile
   rm cloudbuild.yaml
   popd
 done
