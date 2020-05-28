@@ -1,6 +1,12 @@
 # An empty module.
 # We do not want cluster creation to take place, so this is a placeholder for the module that creates a cluster.
 
+variable "project" {
+  type = "string"
+  description = "project name"
+  default = ""
+}
+
 output "name" {
   value = ""
 }
@@ -18,5 +24,5 @@ output "location" {
 }
 
 output "project" {
-  value = ""
+  value = var.project
 }
