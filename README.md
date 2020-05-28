@@ -154,6 +154,7 @@ Do not use exactly this file: the node ids should never exist in duplicate in th
 project="beaming-essence-301841"
 polkadot_archive_url="https://ipfs.io/ipfs/Qma3fM33cw4PGiw28SidqhFi3CXRa2tpywqLmhYveabEYQ?filename=Qma3fM33cw4PGiw28SidqhFi3CXRa2tpywqLmhYveabEYQ"
 polkadot_validator_name="Hello from k8s!"
+polkadot_version="v0.8.0"
 chain="kusama"
 polkadot_telemetry_url="wss://telemetry-backend.w3f.community/submit"
 polkadot_node_ids = {
@@ -234,16 +235,28 @@ Then go to the [Polkadot Js app](https://polkadot.js.org/apps/#/) and configure 
 Apply an update
 ---------------
 
-If you have pulled the most recent version of `polkadot-k8s` and wish to apply updates, you may do so with a `terraform taint`:
+If you have pulled the most recent version of `polkadot-k8s` and wish to apply updates, issue the following commands:
 
 ```
 terraform taint null_resource.push_containers && terraform taint null_resource.apply && terraform plan -out plan.out
 terraform apply plan.out
 ```
 
-This will rebuild the containers locally, then do a `kubectl apply` to push the most recent changes to your cluster.
+This will rebuild the containers, then apply the kubernetes changes.
 
-The daemons will restart after some time. However, you may kill the pods to restart them immediately.
+If you want to upgrade the polkadot containers version, edit the version number in `terraform.tfvars`, then issue the commands above.
+
+The pods may or may not restart on their own, depending on what changed since last deployment. To force a restart, issue:
+
+```
+kubectl delete pod polkadot-sentry-node-0
+kubectl delete pod polkadot-sentry-node-1
+kubectl delete pod polkadot-private-node-0
+```
+
+Look at the logs and ensure each pod comes back online before deleting the next one.
+
+NOTE: since these pods are part of Deployment/StatefulSet, kubernetes auto-restarts them when you delete them. Their storage is persisted so they restart where they left off.
 
 ## Wrapping up
 
