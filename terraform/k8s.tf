@@ -30,19 +30,45 @@ EOF
   }
 }
 
+# generate node keys if they are not passed as parameters
+# conventiently, ed25519 is happy with random bytes as private key
+# unfortunately, terraform does not support generation of sensitive hex data, so we have
+# to hack the "random_password" resource to generate a hex
+resource "random_password" "private-node-0-key" {
+  count = contains(keys(var.polkadot_node_keys), "polkadot-private-node-0") ? 0 : 1
+  length = 64
+  override_special = "abcdef1234567890"
+  upper = false
+  lower = false
+  number = false
+}
+
+resource "random_password" "sentry-node-0-key" {
+  count = contains(keys(var.polkadot_node_keys), "polkadot-sentry-node-0") ? 0 : 1
+  length = 64
+  override_special = "abcdef1234567890"
+  upper = false
+  lower = false
+  number = false
+}
+
+resource "random_password" "sentry-node-1-key" {
+  count = contains(keys(var.polkadot_node_keys), "polkadot-sentry-node-1") ? 0 : 1
+  length = 64
+  override_special = "abcdef1234567890"
+  upper = false
+  lower = false
+  number = false
+}
+
 resource "kubernetes_secret" "polkadot_node_keys" {
   metadata {
     name = "polkadot-node-keys"
   }
-  data = var.polkadot_node_keys
-  depends_on = [ null_resource.push_containers ]
-}
-
-resource "kubernetes_secret" "polkadot_node_ids" {
-  metadata {
-    name = "polkadot-node-ids"
-  }
-  data = var.polkadot_node_ids
+  data = {
+    "polkadot-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", random_password.private-node-0-key[0].result),
+    "polkadot-sentry-node-0" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-0", random_password.sentry-node-0-key[0].result),
+    "polkadot-sentry-node-1" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-1", random_password.sentry-node-1-key[0].result) }
   depends_on = [ null_resource.push_containers ]
 }
 
@@ -91,6 +117,9 @@ imageTags:
     newTag: latest
   - name: polkadot-archive-downloader
     newName: gcr.io/${module.terraform-gke-blockchain.project}/polkadot-archive-downloader
+    newTag: latest
+  - name: polkadot-node-key-configurator
+    newName: gcr.io/${module.terraform-gke-blockchain.project}/polkadot-node-key-configurator
     newTag: latest
 
 configMapGenerator:

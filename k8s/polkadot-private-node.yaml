@@ -108,10 +108,6 @@ spec:
         - containerPort: 9933
           name: dot-rpc-port
         volumeMounts:
-        - name: polkadot-node-ids
-          mountPath: /polkadot-node-ids
-        - name: polkadot-node-keys
-          mountPath: /polkadot-node-keys
         - name: polkadot-private-node-pv-claim
           mountPath: /polkadot
         resources:
@@ -122,13 +118,17 @@ spec:
         - configMapRef:
             name: polkadot-configmap
       volumes:
-      - name: polkadot-node-ids
-        secret:
-          secretName: polkadot-node-ids
       - name: polkadot-node-keys
         secret:
           secretName: polkadot-node-keys
       initContainers:
+      - name: polkadot-node-key-configurator
+        image: polkadot-node-key-configurator
+        volumeMounts:
+        - name: polkadot-private-node-pv-claim
+          mountPath: /polkadot
+        - name: polkadot-node-keys
+          mountPath: /polkadot-node-keys
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
         env:

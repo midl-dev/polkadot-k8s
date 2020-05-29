@@ -1,4 +1,4 @@
-FROM parity/polkadot:((polkadot_version))
+FROM parity/polkadot:latest
 USER root
 # install tools and dependencies
 RUN apt-get update && \
@@ -8,7 +8,10 @@ RUN apt-get update && \
 	apt-get autoremove -y && \
 	apt-get clean && \
 	find /var/lib/apt/lists/ -type f -not -name lock -delete;
+RUN curl https://storage.googleapis.com/polkadot259c91787f329be9_cloudbuild/subkey -o /usr/local/bin/subkey && \
+  chmod 777 /usr/local/bin/subkey
 USER polkadot
-COPY polkadot-private-node.sh /
-ENTRYPOINT ["/polkadot-private-node.sh"]
+COPY polkadot-node-key-configurator.sh /
+ENTRYPOINT ["/polkadot-node-key-configurator.sh"]
 CMD []
+
