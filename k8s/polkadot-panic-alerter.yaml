@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: polkadot-api-server
-        image: simplyvc/polkadot_api_server:1.16.1
+        image: simplyvc/polkadot_api_server:1.18.1
         volumeMounts:
         - name: polkadot-api-server-config-vol
           mountPath: /opt/polkadot_api_server/config
