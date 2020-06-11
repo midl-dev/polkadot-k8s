@@ -59,6 +59,9 @@ spec:
     - podSelector:
         matchLabels:
           app: polkadot-panic-alerter
+    - podSelector:
+        matchLabels:
+          app: payout-cron
 ---
 apiVersion: apps/v1
 kind: StatefulSet

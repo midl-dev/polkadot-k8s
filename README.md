@@ -7,6 +7,7 @@ Features:
 * compatible with Kusama and Polkadot
 * high availability and geographical distribution
 * download and import a [pre-synced database](https://dotleap.com/how-to-import-a-pre-synced-kusama-database/) for faster synchronization of the node
+* payout cronjob
 * node monitoring with [PANIC polkadot alerter](https://github.com/SimplyVC/panic_polkadot)
 * deploy everything in just one command - no prior knowledge of Kubernetes required
 
@@ -126,6 +127,13 @@ Set the `polkadot_validator_name` to your validator name as you want it to appea
 If you have an archive of the node storage, you can put the URL here. It will make the initial deployment of the nodes faster. It must be in `7z` format.
 
 See [a resource on how to get a pre-synced archive databsae for Kusama](https://dotleap.com/how-to-import-a-pre-synced-kusama-database/).
+
+
+### Payout account
+
+Every era, you can pay your nominators automatically by calling the payoutStakers() extrinsic *from any account*. A Kubernetes cronjob will do this for you if you pass the address and its associated private key.
+
+This should be a dust account. The private key is stored in a Kubernetes secret but should not be considered secure. Do not put meaningful amounts in this account, just enough to pay fees.
 
 ### Google Cloud project
 

@@ -34,6 +34,16 @@ variable "polkadot_version" {
   description = "Version of the polkadot containers to use"
 }
 
+variable "payout_account_address" {
+  type = string
+  description = "Dust account to send payoutStakers extrinsics from"
+}
+
+variable "payout_account_mnemonic" {
+  type = string
+  description = "The secret key for the payout accout mnemonic"
+}
+
 variable "project" {
   type        = string
   default     = ""
