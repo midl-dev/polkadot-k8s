@@ -86,6 +86,15 @@ resource "kubernetes_secret" "polkadot_panic_alerter_config_vol" {
   depends_on = [ null_resource.push_containers ]
 }
 
+resource "kubernetes_secret" "polkadot_payout_account_mnemonic" {
+  metadata {
+    name = "polkadot-payout-account-mnemonic"
+  }
+  data = {
+    "payout-account-mnemonic" = var.payout_account_mnemonic
+  }
+}
+
 resource "null_resource" "apply" {
   provisioner "local-exec" {
 
@@ -107,6 +116,7 @@ resources:
 - polkadot-private-node.yaml
 - polkadot-sentry-nodes.yaml
 - polkadot-panic-alerter.yaml
+- payout-cron.yaml
 
 imageTags:
   - name: polkadot-private-node
@@ -121,6 +131,9 @@ imageTags:
   - name: polkadot-node-key-configurator
     newName: gcr.io/${module.terraform-gke-blockchain.project}/polkadot-node-key-configurator
     newTag: latest
+  - name: payout-cron
+    newName: gcr.io/${module.terraform-gke-blockchain.project}/payout-cron
+    newTag: latest
 
 configMapGenerator:
 - name: polkadot-configmap
@@ -129,6 +142,9 @@ configMapGenerator:
       - TELEMETRY_URL="${var.polkadot_telemetry_url}"
       - VALIDATOR_NAME="${var.polkadot_validator_name}"
       - CHAIN="${var.chain}"
+- name: polkadot-payout-cron
+  literals:
+      - PAYOUT_ACCOUNT_ADDRESS="${var.payout_account_address}"
 EOK
 kubectl apply -k .
 rm -v kustomization.yaml
