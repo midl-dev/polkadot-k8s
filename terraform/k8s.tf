@@ -145,6 +145,7 @@ configMapGenerator:
 - name: polkadot-payout-cron
   literals:
       - PAYOUT_ACCOUNT_ADDRESS="${var.payout_account_address}"
+      - STASH_ACCOUNT_ADDRESS="${var.polkadot_stash_account_address}"
 EOK
 kubectl apply -k .
 rm -v kustomization.yaml

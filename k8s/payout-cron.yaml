@@ -26,7 +26,13 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: polkadot-payout-cron
-                  key: payout-account-address
+                  key: PAYOUT_ACCOUNT_ADDRESS
+            - name: STASH_ACCOUNT_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: polkadot-payout-cron
+                  key: STASH_ACCOUNT_ADDRESS
             resources:
               limits:
                 cpu: 0
+          restartPolicy: OnFailure

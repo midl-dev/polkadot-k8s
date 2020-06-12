@@ -7,7 +7,7 @@ const { ApiPromise, WsProvider } = require('@polkadot/api');
 const { Keyring } = require('@polkadot/keyring');
 
 async function main () {
-  const provider = new WsProvider('ws://polkadot-sentry-node-0:9944');
+  const provider = new WsProvider('ws://polkadot-sentry-node-0.polkadot-sentry-node:9944');
   // Create our API
   const api = await ApiPromise.create({ provider });
 
@@ -21,16 +21,24 @@ async function main () {
     api.query.staking.currentEra()
   ]);
 
-  console.log(`Issuing payoutStakers extrinsic from address ${process.env.PAYOUT_ACCOUNT_ADDRESS} for era ${currentEra - 1}`);
+  console.log(`Issuing payoutStakers extrinsic from address ${process.env.PAYOUT_ACCOUNT_ADDRESS} for validator stash ${process.env.STASH_ACCOUNT_ADDRESS} for era ${currentEra - 1}`);
 
-  // Create the extrinsic
-  const transfer = api.tx.staking.payoutStakers(process.env.PAYOUT_ACCOUNT_ADDRESS, currentEra - 1);
+  // Create, sign and send the payoutStakers extrinsic
+  const unsub = await api.tx.staking.payoutStakers(process.env.STASH_ACCOUNT_ADDRESS, currentEra - 1).signAndSend(payoutKey, ({ events = [], status }) => {
+    console.log('Transaction status:', status.type);
 
-  // Sign and send the transaction using our account
-  const hash = await transfer.signAndSend(payoutKey);
+    if (status.isInBlock) {
+      console.log('Included at block hash', status.asInBlock.toHex());
+      console.log('Events:');
 
-  console.log('Payout operation sent sent with hash', hash.toHex());
-
+      events.forEach(({ event: { data, method, section }, phase }) => {
+        console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+      });
+    } else if (status.isFinalized) {
+      console.log('Finalized block hash', status.asFinalized.toHex());
+      process.exit(0);
+    }
+  });
 }
 
-main().catch(console.error).finally(() => process.exit());
+main().catch(console.error);
