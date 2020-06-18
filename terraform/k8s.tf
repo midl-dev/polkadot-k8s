@@ -10,7 +10,7 @@ resource "null_resource" "push_containers" {
     command = <<EOF
 
 
-find ${path.module}/../docker -mindepth 1 -type d  -printf '%f\n'| while read container; do
+find ${path.module}/../docker -mindepth 1 -maxdepth 1 -type d  -printf '%f\n'| while read container; do
   
   pushd ${path.module}/../docker/$container
   cp Dockerfile.template Dockerfile
