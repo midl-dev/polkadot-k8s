@@ -52,20 +52,6 @@ spec:
   - ports:
     - port: 30333
       protocol: TCP
-  - ports:
-    - port: 9944
-      protocol: TCP
-    from:
-    - podSelector:
-        matchLabels:
-          app: polkadot-panic-alerter
-  - ports:
-    - port: 9944
-      protocol: TCP
-    from:
-    - podSelector:
-        matchLabels:
-          app: polkadot-payout-cron
 ---
 apiVersion: apps/v1
 kind: StatefulSet

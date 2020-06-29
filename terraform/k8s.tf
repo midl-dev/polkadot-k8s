@@ -72,29 +72,6 @@ resource "kubernetes_secret" "polkadot_node_keys" {
   depends_on = [ null_resource.push_containers ]
 }
 
-resource "kubernetes_secret" "polkadot_panic_alerter_config_vol" {
-  metadata {
-    name = "polkadot-panic-alerter-config-vol"
-  }
-  data = {
-    "internal_config_alerts.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_alerts.ini")}"
-    "internal_config_main.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/internal_config_main.ini")}"
-    "user_config_main.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_main.ini", { "telegram_alert_chat_id" : var.telegram_alert_chat_id, "telegram_alert_chat_token": var.telegram_alert_chat_token } )}"
-    "user_config_nodes.ini" = "${templatefile("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_nodes.ini", {"polkadot_stash_account_address": var.polkadot_stash_account_address})}"
-    "user_config_repos.ini" = "${file("${path.module}/../k8s/polkadot-panic-alerter-configs-template/user_config_repos.ini")}"
-  }
-  depends_on = [ null_resource.push_containers ]
-}
-
-resource "kubernetes_secret" "polkadot_payout_account_mnemonic" {
-  metadata {
-    name = "polkadot-payout-account-mnemonic"
-  }
-  data = {
-    "payout-account-mnemonic" = var.payout_account_mnemonic
-  }
-}
-
 resource "null_resource" "apply" {
   provisioner "local-exec" {
 
@@ -115,8 +92,6 @@ kind: Kustomization
 resources:
 - polkadot-private-node.yaml
 - polkadot-sentry-nodes.yaml
-- polkadot-panic-alerter.yaml
-- payout-cron.yaml
 
 imageTags:
   - name: polkadot-private-node
@@ -131,9 +106,6 @@ imageTags:
   - name: polkadot-node-key-configurator
     newName: gcr.io/${module.terraform-gke-blockchain.project}/polkadot-node-key-configurator
     newTag: latest
-  - name: payout-cron
-    newName: gcr.io/${module.terraform-gke-blockchain.project}/payout-cron
-    newTag: latest
 
 configMapGenerator:
 - name: polkadot-configmap
@@ -142,10 +114,6 @@ configMapGenerator:
       - TELEMETRY_URL="${var.polkadot_telemetry_url}"
       - VALIDATOR_NAME="${var.polkadot_validator_name}"
       - CHAIN="${var.chain}"
-- name: polkadot-payout-cron
-  literals:
-      - PAYOUT_ACCOUNT_ADDRESS="${var.payout_account_address}"
-      - STASH_ACCOUNT_ADDRESS="${var.polkadot_stash_account_address}"
 EOK
 kubectl apply -k .
 rm -v kustomization.yaml

@@ -71,13 +71,6 @@ spec:
   - ports:
     - port: 9615
       protocol: TCP
-  - ports:
-    - port: 9944
-      protocol: TCP
-    from:
-    - podSelector:
-        matchLabels:
-          app: polkadot-panic-alerter
 ---
 apiVersion: apps/v1
 kind: StatefulSet

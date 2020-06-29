@@ -31,10 +31,6 @@ fi
 eval /usr/local/bin/polkadot --validator --pruning=archive --wasm-execution Compiled \
          --reserved-only \
          --prometheus-external \
-         --unsafe-ws-external \
-         --unsafe-rpc-external \
-         --rpc-methods unsafe \
-         --rpc-cors=all \
          --node-key-file /polkadot/k8s_local_node_key \
          $sentry_node_0_param \
          $sentry_node_1_param \

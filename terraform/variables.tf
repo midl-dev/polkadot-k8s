@@ -34,18 +34,6 @@ variable "polkadot_version" {
   description = "Version of the polkadot containers to use"
 }
 
-variable "payout_account_address" {
-  type = string
-  description = "Dust account to send payoutStakers extrinsics from"
-  default = ""
-}
-
-variable "payout_account_mnemonic" {
-  type = string
-  description = "The secret key for the payout accout mnemonic"
-  default = ""
-}
-
 variable "project" {
   type        = string
   default     = ""
@@ -76,17 +64,3 @@ variable "terraform_service_account_credentials" {
   default = "~/.config/gcloud/application_default_credentials.json"
 }
 
-variable "telegram_alert_chat_id" {
-  type = string
-  description = "chat id for polkadot panic alerter"
-}
-
-variable "telegram_alert_chat_token" {
-  type = string
-  description = "the secret token for telegram panic alerter"
-}
-
-variable "polkadot_stash_account_address" {
-  type = string
-  description = "the stash address"
-}

@@ -7,15 +7,11 @@ Features:
 * compatible with Kusama and Polkadot
 * high availability and geographical distribution
 * download and import a [pre-synced database](https://dotleap.com/how-to-import-a-pre-synced-kusama-database/) for faster synchronization of the node
-* payout cronjob
-* node monitoring with [PANIC polkadot alerter](https://github.com/SimplyVC/panic_polkadot)
 * deploy everything in just one command - no prior knowledge of Kubernetes required
 
 TODO:
 
-* automated payout cronjob
 * support for on-prem remote signer [whenever available](https://github.com/paritytech/substrate/issues/4689)
-* node key autogeneration
 
 Brought to you by MIDL.dev
 --------------------------
@@ -104,14 +100,6 @@ polkadot_node_keys = {
 }
 ```
 
-### PANIC alerter variables
-
-PANIC performs monitoring of your cluster and alerts you on a telegram channel when something is wrong with your nodes.
-
-Enter your stash account identifier under `polkadot_stash_account_address`. PANIC will monitor validation operations of this address.
-
-Create a telegram channel and a bot that can post to it. Populate `telegram_alert_chat_id` and `telegram_alert_chat_token`
-
 ### Polkadot utility parameters
 
 Set the `polkadot_version` to the desired version of polkadot container.
@@ -152,16 +140,12 @@ polkadot_validator_name="Hello from k8s!"
 polkadot_version="v0.8.0"
 chain="kusama"
 polkadot_telemetry_url="wss://telemetry-backend.w3f.community/submit"
-telegram_alert_chat_id="-486750097"
-telegram_alert_chat_token="1273059891:ABEzzzzzzzzzzzzzzzzzzzzzzzz"
-polkadot_stash_account_address = "D3bm5iAeeRezwZp4tWTX4sZN9u8nXy2Fo21U59smznYHF3F"
 ```
 
 The example above would:
 * deploy a validator setup in the Google Cloud project named `beaming-essence-301841`
 * download a kusama snapshot from IPFS
 * report to telemetry server `w3f.community` under the name `Hello from k8s!`
-* send alerts to a telegram chat
 
 ## Deploy!
 
@@ -195,7 +179,6 @@ kubectl  logs -f polkadot-private-node-0 --tail=10
 ### How to check your validator node is running ?
 
 * connect to your telemetry server and search for your node by name
-* look at alerts in the PANIC telegram channel
 * set up a websocket tunnel to your local host
 
 ```
