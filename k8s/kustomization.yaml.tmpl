@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- polkadot-private-node.yaml
+- polkadot-sentry-nodes.yaml
+
+# Adds namespace to all resources.
+namespace: ${kubernetes_namespace}
+
+# Value of this field is prepended to the
+# names of all resources, e.g. a deployment named
+# "wordpress" becomes "alices-wordpress".
+namePrefix: ${kubernetes_name_prefix}-
+
+imageTags:
+  - name: polkadot-private-node
+    newName: gcr.io/${project}/polkadot-private-node
+    newTag: latest
+  - name: polkadot-sentry-node
+    newName: gcr.io/${project}/polkadot-sentry-node
+    newTag: latest
+  - name: polkadot-archive-downloader
+    newName: gcr.io/${project}/polkadot-archive-downloader
+    newTag: latest
+  - name: polkadot-node-key-configurator
+    newName: gcr.io/${project}/polkadot-node-key-configurator
+    newTag: latest
+
+configMapGenerator:
+- name: polkadot-configmap
+  literals:
+      - ARCHIVE_URL="${polkadot_archive_url}"
+      - TELEMETRY_URL="${polkadot_telemetry_url}"
+      - VALIDATOR_NAME="${polkadot_validator_name}"
+      - CHAIN="${chain}"
