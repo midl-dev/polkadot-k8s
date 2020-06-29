@@ -52,9 +52,39 @@ variable "billing_account" {
   default = ""
 }
 
-variable "kubernetes_config_context" {
+variable "kubernetes_namespace" {
   type = string
-  description = "name of the kubernetes context where to create the deployment. Only set when you already have an existing cluster"
+  description = "kubernetes namespace to deploy the resource into"
+  default = "polkadot"
+}
+
+variable "kubernetes_name_prefix" {
+  type = string
+  description = "kubernetes name prefix to prepend to all resources (should be short, like DOT)"
+  default = "dot"
+}
+
+variable "kubernetes_endpoint" {
+  type = string
+  description = "name of the kubernetes endpoint"
+  default = ""
+}
+
+variable "cluster_ca_certificate" {
+  type = string
+  description = "kubernetes cluster certificate"
+  default = ""
+}
+
+variable "cluster_name" {
+  type = string
+  description = "name of the kubernetes cluster"
+  default = ""
+}
+
+variable "kubernetes_access_token" {
+  type = string
+  description = "name of the kubernetes endpoint"
   default = ""
 }
 
@@ -63,4 +93,3 @@ variable "terraform_service_account_credentials" {
   description = "path to terraform service account file, created following the instructions in https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform"
   default = "~/.config/gcloud/application_default_credentials.json"
 }
-
