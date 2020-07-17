@@ -5,11 +5,11 @@ set -x
 
 get_node_id() {
     node_id=$(cat /polkadot/k8s_node_ids/$1)
-    printf '%s\n' "--sentry-nodes /dns4/$1.polkadot-sentry-node/tcp/30333/p2p/$node_id"
+    printf '%s\n' "--sentry-nodes /dns4/$1.$KUBERNETES_NAME_PREFIX-sentry-node/tcp/30333/p2p/$node_id"
 }
 
-sentry_node_0_param=$(get_node_id "polkadot-sentry-node-0")
-sentry_node_1_param=$(get_node_id "polkadot-sentry-node-1")
+sentry_node_0_param=$(get_node_id "$KUBERNETES_NAME_PREFIX-sentry-node-0")
+sentry_node_1_param=$(get_node_id "$KUBERNETES_NAME_PREFIX-sentry-node-1")
 
 if [ -e /polkadot-node-keys/$(hostname) ]; then
     node_key_param="--node-key $(cat /polkadot-node-keys/$(hostname))"

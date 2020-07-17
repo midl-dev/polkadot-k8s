@@ -46,6 +46,12 @@ variable "org_id" {
   default = ""
 }
 
+variable "region" {
+  type        = string
+  description = "GCP Region. Only necessary when creating cluster manually"
+  default = ""
+}
+
 variable "billing_account" {
   type        = string
   description = "Billing account ID."

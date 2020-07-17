@@ -71,9 +71,9 @@ resource "kubernetes_namespace" "polkadot_namespace" {
 # FIXME this is a bug in kustomize where it will not prepend characters to the storageClass requirement
 # to address it, we define it here. At some point, later, it will stop being needed.
 resource "kubernetes_storage_class" "local-ssd" {
+  count = var.kubernetes_name_prefix == "dot" ? 1  : 0
   metadata {
     name = "local-ssd"
-    namespace = var.kubernetes_namespace
   }
   storage_provisioner = "kubernetes.io/gce-pd"
   parameters = {
@@ -85,15 +85,15 @@ resource "kubernetes_storage_class" "local-ssd" {
 # FIXME this is a bug in kustomize where it will not prepend characters to the storageClass requirement
 # to address it, we define it here. At some point, later, it will stop being needed.
 resource "kubernetes_storage_class" "repd-europe-west1-b-d" {
+  count = var.kubernetes_name_prefix == "dot" ? 1  : 0
   metadata {
     name = "repd-europe-west1-b-d"
-    namespace = var.kubernetes_namespace
   }
   storage_provisioner = "kubernetes.io/gce-pd"
   parameters = {
     type = "pd-ssd"
-    replication-type = regional-pd
-    zones = [ "europe-west1-b", "europe-west1-d" ]
+    replication-type = "regional-pd"
+    zones = "europe-west1-b, europe-west1-d"
   }
   depends_on = [ kubernetes_namespace.polkadot_namespace ]
 }
@@ -104,9 +104,9 @@ resource "kubernetes_secret" "polkadot_node_keys" {
     namespace = var.kubernetes_namespace
   }
   data = {
-    "polkadot-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", random_password.private-node-0-key[0].result),
-    "polkadot-sentry-node-0" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-0", random_password.sentry-node-0-key[0].result),
-    "polkadot-sentry-node-1" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-1", random_password.sentry-node-1-key[0].result) }
+    "${var.kubernetes_name_prefix}-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", random_password.private-node-0-key[0].result),
+    "${var.kubernetes_name_prefix}-sentry-node-0" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-0", random_password.sentry-node-0-key[0].result),
+    "${var.kubernetes_name_prefix}-sentry-node-1" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-1", random_password.sentry-node-1-key[0].result) }
   depends_on = [ kubernetes_namespace.polkadot_namespace ]
 }
 
@@ -126,7 +126,7 @@ ${templatefile("${path.module}/../k8s/kustomization.yaml.tmpl",
      { "project" : module.terraform-gke-blockchain.project,
        "polkadot_archive_url": var.polkadot_archive_url,
        "polkadot_telemetry_url": var.polkadot_telemetry_url,
-       "polkadot_validator_name": var.polkadot_version,
+       "polkadot_validator_name": var.polkadot_validator_name,
        "chain": var.chain,
        "kubernetes_namespace": var.kubernetes_namespace,
        "kubernetes_name_prefix": var.kubernetes_name_prefix})}

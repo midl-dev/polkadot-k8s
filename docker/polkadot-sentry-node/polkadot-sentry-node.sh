@@ -5,10 +5,10 @@ set -x
 
 get_node_id() {
     node_id=$(cat /polkadot/k8s_node_ids/$1)
-    printf '%s\n' "--sentry /dns4/$1.polkadot-private-node/tcp/30333/p2p/$node_id"
+    printf '%s\n' "--sentry /dns4/$1.$KUBERNETES_NAME_PREFIX-private-node/tcp/30333/p2p/$node_id"
 }
 
-sentry_param=$(get_node_id "polkadot-private-node-0")
+sentry_param=$(get_node_id "$KUBERNETES_NAME_PREFIX-private-node-0")
 
 if [ ! -z "$TELEMETRY_URL" ]; then
     telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 0\""
@@ -21,6 +21,7 @@ fi
 eval /usr/local/bin/polkadot --pruning=archive --wasm-execution Compiled \
          --unsafe-ws-external \
          --unsafe-rpc-external \
+         --prometheus-external \
          --rpc-methods=Unsafe \
          --rpc-cors=all \
          --node-key-file /polkadot/k8s_local_node_key \
