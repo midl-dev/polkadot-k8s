@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: private-node
   labels:
-    blockchain_node: polkadot
+    app: private-node
 spec:
   ports:
   - port: 9615
@@ -15,6 +15,22 @@ spec:
   selector:
     app: private-node
   clusterIP: None
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: private-node
+    release: monitoring
+  name: private-monitoring
+spec:
+  endpoints:
+  - interval: 15s
+    port: metrics
+    path: /metrics
+  selector:
+    matchLabels:
+      app: private-node
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -78,7 +94,7 @@ spec:
         image: polkadot-private-node
         ports:
         - containerPort: 9615
-          name: metrics-port
+          name: metrics
         - containerPort: 9944
           name: dot-ws-port
         - containerPort: 9933

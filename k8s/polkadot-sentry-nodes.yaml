@@ -16,6 +16,22 @@ spec:
     app: sentry-node
   clusterIP: None
 ---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: sentry-node
+    release: monitoring
+  name: sentry-monitoring
+spec:
+  endpoints:
+  - interval: 15s
+    port: metrics
+    path: /metrics
+  selector:
+    matchLabels:
+      app: sentry-node
+---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
