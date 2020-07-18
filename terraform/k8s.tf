@@ -65,7 +65,7 @@ resource "kubernetes_namespace" "polkadot_namespace" {
   metadata {
     name = var.kubernetes_namespace
   }
-  depends_on = [ null_resource.push_containers ]
+  depends_on = [ module.terraform-gke-blockchain ]
 }
 
 # FIXME this is a bug in kustomize where it will not prepend characters to the storageClass requirement
