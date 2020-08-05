@@ -7,7 +7,10 @@ resource "null_resource" "push_containers" {
     )
   }
   provisioner "local-exec" {
+    interpreter = [ "/bin/bash", "-c" ]
     command = <<EOF
+set -e
+set -x
 
 
 find ${path.module}/../docker -mindepth 1 -maxdepth 1 -type d  -printf '%f\n'| while read container; do
@@ -22,8 +25,8 @@ steps:
 images: ["gcr.io/${module.terraform-gke-blockchain.project}/$container:latest"]
 EOY
   gcloud builds submit --project ${module.terraform-gke-blockchain.project} --config cloudbuild.yaml .
-  rm -v Dockerfile
-  rm cloudbuild.yaml
+  rm -vf Dockerfile
+  rm  -vf cloudbuild.yaml
   popd
 done
 EOF
@@ -104,15 +107,16 @@ resource "kubernetes_secret" "polkadot_node_keys" {
     namespace = var.kubernetes_namespace
   }
   data = {
-    "${var.kubernetes_name_prefix}-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", random_password.private-node-0-key[0].result),
-    "${var.kubernetes_name_prefix}-sentry-node-0" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-0", random_password.sentry-node-0-key[0].result),
-    "${var.kubernetes_name_prefix}-sentry-node-1" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-1", random_password.sentry-node-1-key[0].result) }
+    "${var.kubernetes_name_prefix}-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", length(random_password.private-node-0-key) == 1 ? random_password.private-node-0-key[0].result : ""),
+    "${var.kubernetes_name_prefix}-sentry-node-0" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-0", length(random_password.sentry-node-0-key) == 1 ? random_password.sentry-node-0-key[0].result : ""),
+    "${var.kubernetes_name_prefix}-sentry-node-1" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-1", length(random_password.sentry-node-1-key) == 1 ? random_password.sentry-node-1-key[0].result : "") }
   depends_on = [ kubernetes_namespace.polkadot_namespace ]
 }
 
 resource "null_resource" "apply" {
   provisioner "local-exec" {
 
+    interpreter = [ "/bin/bash", "-c" ]
     command = <<EOF
 set -e
 set -x
