@@ -1,3 +1,12 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+    name: local-ssd
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+allowVolumeExpansion: true
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,12 +15,12 @@ metadata:
     app: private-node
 spec:
   ports:
-  - port: 9615
-    name: metrics
-  - port: 9944
-    name: ws
   - port: 9933
     name: rpc
+  - port: 9615
+    name: metrics
+  - port: 30333
+    name: p2p
   selector:
     app: private-node
   clusterIP: None
@@ -70,6 +79,8 @@ spec:
   - ports:
     - port: 9615
       protocol: TCP
+    - port: 30333
+      protocol: TCP
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -78,14 +89,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: private-node # Label selector that determines which Pods belong to the StatefulSet
-                 # Must match spec: template: metadata: labels
-  serviceName: "polkadot-private-node"
+      app: private-node
+  serviceName: private-node
   replicas: 1
   template:
     metadata:
       labels:
-        app: private-node # Pod template's label selector
+        app: private-node
     spec:
       securityContext:
         fsGroup: 1000
@@ -93,22 +103,21 @@ spec:
       - name: polkadot-private-node
         image: polkadot-private-node
         ports:
-        - containerPort: 9615
-          name: metrics
-        - containerPort: 9944
-          name: dot-ws-port
         - containerPort: 9933
           name: dot-rpc-port
+        - containerPort: 9615
+          name: metrics
+        - containerPort: 30333
+          name: dot-p2p-port
         volumeMounts:
         - name: polkadot-private-node-pv-claim
           mountPath: /polkadot
-        resources:
-          limits:
-            cpu: 0
-        imagePullPolicy: Always
         envFrom:
         - configMapRef:
             name: polkadot-configmap
+        resources:
+          limits:
+            cpu: 0
       volumes:
       - name: polkadot-node-keys
         secret:
@@ -129,24 +138,21 @@ spec:
               key: KUBERNETES_NAME_PREFIX
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
+        volumeMounts:
+        - name: polkadot-private-node-pv-claim
+          mountPath: /polkadot
         env:
         - name: ARCHIVE_URL
           valueFrom:
             configMapKeyRef:
               name: polkadot-configmap
               key: ARCHIVE_URL
-        volumeMounts:
-        - name: polkadot-private-node-pv-claim
-          mountPath: /polkadot
-        resources:
-          limits:
-            cpu: 0
   volumeClaimTemplates:
   - metadata:
       name: polkadot-private-node-pv-claim
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: repd-europe-west1-b-d
+      storageClassName: local-ssd
       resources:
         requests:
           storage: 50Gi

@@ -46,24 +46,6 @@ resource "random_password" "private-node-0-key" {
   number = false
 }
 
-resource "random_password" "sentry-node-0-key" {
-  count = contains(keys(var.polkadot_node_keys), "polkadot-sentry-node-0") ? 0 : 1
-  length = 64
-  override_special = "abcdef1234567890"
-  upper = false
-  lower = false
-  number = false
-}
-
-resource "random_password" "sentry-node-1-key" {
-  count = contains(keys(var.polkadot_node_keys), "polkadot-sentry-node-1") ? 0 : 1
-  length = 64
-  override_special = "abcdef1234567890"
-  upper = false
-  lower = false
-  number = false
-}
-
 resource "kubernetes_namespace" "polkadot_namespace" {
   metadata {
     name = var.kubernetes_namespace
@@ -107,9 +89,7 @@ resource "kubernetes_secret" "polkadot_node_keys" {
     namespace = var.kubernetes_namespace
   }
   data = {
-    "${var.kubernetes_name_prefix}-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", length(random_password.private-node-0-key) == 1 ? random_password.private-node-0-key[0].result : ""),
-    "${var.kubernetes_name_prefix}-sentry-node-0" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-0", length(random_password.sentry-node-0-key) == 1 ? random_password.sentry-node-0-key[0].result : ""),
-    "${var.kubernetes_name_prefix}-sentry-node-1" : lookup(var.polkadot_node_keys, "polkadot-sentry-node-1", length(random_password.sentry-node-1-key) == 1 ? random_password.sentry-node-1-key[0].result : "") }
+    "${var.kubernetes_name_prefix}-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", length(random_password.private-node-0-key) == 1 ? random_password.private-node-0-key[0].result : "") }
   depends_on = [ kubernetes_namespace.polkadot_namespace ]
 }
 
@@ -134,6 +114,10 @@ ${templatefile("${path.module}/../k8s/kustomization.yaml.tmpl",
        "chain": var.chain,
        "kubernetes_namespace": var.kubernetes_namespace,
        "kubernetes_name_prefix": var.kubernetes_name_prefix})}
+EOK
+cat <<EOK > prefixedpv.yaml
+${templatefile("${path.module}/../k8s/prefixedpv.yaml.tmpl",
+     { "kubernetes_name_prefix": var.kubernetes_name_prefix})}
 EOK
 kubectl apply -k .
 popd

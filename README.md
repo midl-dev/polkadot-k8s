@@ -25,10 +25,6 @@ Architecture
 
 This is a Kubernetes private cluster with two nodes located in two Google Cloud zones, in the same region.
 
-The sentry nodes are a StatefulSet of two pods, one in each zone. They connect to the peer-to-peer network.
-
-A private validator node performs validation operations and generates blocks. It connects exclusively to the two public nodes belonging to the cluster.
-
 The validator node uses a [Regional Persistent Disk](https://cloud.google.com/compute/docs/disks/#repds) so it can be respun quickly in the other node from the pool if the first node goes offline for any reason, for example base OS upgrade.
 
 The setup is production hardened:

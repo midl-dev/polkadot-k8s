@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
 - polkadot-private-node.yaml
-- polkadot-sentry-nodes.yaml
 
 # Adds namespace to all resources.
 namespace: ${kubernetes_namespace}
@@ -16,9 +15,6 @@ namePrefix: ${kubernetes_name_prefix}-
 imageTags:
   - name: polkadot-private-node
     newName: gcr.io/${project}/polkadot-private-node
-    newTag: latest
-  - name: polkadot-sentry-node
-    newName: gcr.io/${project}/polkadot-sentry-node
     newTag: latest
   - name: polkadot-archive-downloader
     newName: gcr.io/${project}/polkadot-archive-downloader
@@ -35,3 +31,6 @@ configMapGenerator:
       - VALIDATOR_NAME="${polkadot_validator_name}"
       - CHAIN="${chain}"
       - KUBERNETES_NAME_PREFIX="${kubernetes_name_prefix}"
+
+patchesStrategicMerge:
+- prefixedpv.yaml
