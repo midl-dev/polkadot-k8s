@@ -119,6 +119,14 @@ cat <<EOK > prefixedpv.yaml
 ${templatefile("${path.module}/../k8s/prefixedpv.yaml.tmpl",
      { "kubernetes_name_prefix": var.kubernetes_name_prefix})}
 EOK
+cat <<EORPP > regionalpvpatch.yaml
+${templatefile("${path.module}/../k8s/regionalpvpatch.yaml.tmpl",
+   { "regional_pd_zones" : join(", ", var.node_locations),
+     "kubernetes_name_prefix": var.kubernetes_name_prefix})}
+EORPP
+cat <<EONPN > nodepool.yaml
+${templatefile("${path.module}/../k8s/nodepool.yaml.tmpl", {"kubernetes_pool_name": var.kubernetes_pool_name})}
+EONPN
 kubectl apply -k .
 popd
 rm -rvf ${path.module}/k8s-${var.kubernetes_namespace}

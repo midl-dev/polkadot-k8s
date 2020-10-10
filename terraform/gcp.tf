@@ -5,6 +5,9 @@ module "terraform-gke-blockchain" {
   terraform_service_account_credentials = var.terraform_service_account_credentials
   project = var.project
   project_prefix = "polkadot"
+  region = var.region
+  node_locations = var.node_locations
+  monitoring_slack_url = var.monitoring_slack_url
 }
 
 # Query the client configuration for our current service account, which should

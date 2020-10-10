@@ -52,6 +52,12 @@ variable "region" {
   default = ""
 }
 
+variable "node_locations" {
+  type        = list
+  default     = [ "us-central1-b", "us-central1-f" ]
+  description = "Zones in which to create the nodes"
+}
+
 variable "billing_account" {
   type        = string
   description = "Billing account ID."
@@ -98,4 +104,16 @@ variable "terraform_service_account_credentials" {
   type = string
   description = "path to terraform service account file, created following the instructions in https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform"
   default = "~/.config/gcloud/application_default_credentials.json"
+}
+
+variable "monitoring_slack_url" {
+  type = string
+  default = ""
+  description = "slack api url to send prometheus alerts to"
+}
+
+variable "kubernetes_pool_name" {
+  type = string
+  description = "when kubernetes cluster has several node pools, specify which ones to deploy the baking setup into. only effective when deploying on an external cluster with terraform_no_cluster_create"
+  default = "blockchain-pool"
 }

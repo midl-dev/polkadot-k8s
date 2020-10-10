@@ -1,10 +1,11 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-    name: local-ssd
+    name: regional
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-ssd
+  replication-type: regional-pd
 allowVolumeExpansion: true
 ---
 apiVersion: v1
@@ -61,26 +62,21 @@ spec:
       protocol: UDP
     - port: 443
       protocol: TCP
-  - ports:
     - port: 30333
       protocol: TCP
-    to:
-    - podSelector:
-        matchLabels:
-          app: sentry-node
   ingress:
   - ports:
     - port: 30333
       protocol: TCP
-    from:
-    - podSelector:
-        matchLabels:
-          app: sentry-node
   - ports:
     - port: 9615
       protocol: TCP
-    - port: 30333
-      protocol: TCP
+    from:
+    - namespaceSelector:
+        matchLabels: {}
+      podSelector:
+        matchLabels:
+          app: prometheus
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -150,9 +146,3 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: polkadot-private-node-pv-claim
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: local-ssd
-      resources:
-        requests:
-          storage: 50Gi
