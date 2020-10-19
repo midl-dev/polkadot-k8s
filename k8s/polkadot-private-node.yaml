@@ -64,6 +64,10 @@ spec:
       protocol: TCP
     - port: 30333
       protocol: TCP
+    - port: 30334
+      protocol: TCP
+    - port: 30100
+      protocol: TCP
   ingress:
   - ports:
     - port: 30333
@@ -119,19 +123,6 @@ spec:
         secret:
           secretName: polkadot-node-keys
       initContainers:
-      - name: polkadot-node-key-configurator
-        image: polkadot-node-key-configurator
-        volumeMounts:
-        - name: polkadot-private-node-pv-claim
-          mountPath: /polkadot
-        - name: polkadot-node-keys
-          mountPath: /polkadot-node-keys
-        env:
-        - name: KUBERNETES_NAME_PREFIX
-          valueFrom:
-            configMapKeyRef:
-              name: polkadot-configmap
-              key: KUBERNETES_NAME_PREFIX
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader
         volumeMounts:
