@@ -20,7 +20,7 @@ if [ ! -z "$TELEMETRY_URL" ]; then
 fi
 
 # unsafe flags are due to polkadot panic alerter needing to connect to the node with rpc
-eval /usr/local/bin/polkadot --validator --wasm-execution Compiled \
+eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --unsafe-pruning \
          --pruning=1000 \
          --prometheus-external \
