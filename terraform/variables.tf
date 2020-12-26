@@ -11,6 +11,7 @@ variable "chain" {
 variable "polkadot_archive_url" {
   type        = string
   description = "archive url"
+  default = "https://dot.polkashots.io/snapshot"
 }
 
 variable "polkadot_telemetry_url" {

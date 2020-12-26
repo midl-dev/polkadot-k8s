@@ -118,6 +118,7 @@ spec:
         resources:
           limits:
             cpu: 0
+        imagePullPolicy: Always
       volumes:
       - name: polkadot-node-keys
         secret:
@@ -129,11 +130,17 @@ spec:
         - name: polkadot-private-node-pv-claim
           mountPath: /polkadot
         env:
+        - name: CHAIN
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: CHAIN
         - name: ARCHIVE_URL
           valueFrom:
             configMapKeyRef:
               name: polkadot-configmap
               key: ARCHIVE_URL
+        imagePullPolicy: Always
   volumeClaimTemplates:
   - metadata:
       name: polkadot-private-node-pv-claim

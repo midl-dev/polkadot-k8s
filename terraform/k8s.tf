@@ -12,23 +12,24 @@ resource "null_resource" "push_containers" {
 set -e
 set -x
 
-
-find ${path.module}/../docker -mindepth 1 -maxdepth 1 -type d  -printf '%f\n'| while read container; do
-  
-  pushd ${path.module}/../docker/$container
+build_container () {
+  cd $1
+  container=$(basename $1)
   cp Dockerfile.template Dockerfile
   sed -i "s/((polkadot_version))/${var.polkadot_version}/" Dockerfile
   cat << EOY > cloudbuild.yaml
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', "gcr.io/${module.terraform-gke-blockchain.project}/$container:latest", '.']
-images: ["gcr.io/${module.terraform-gke-blockchain.project}/$container:latest"]
+  args: ['build', '-t', "gcr.io/${module.terraform-gke-blockchain.project}/$container:${var.kubernetes_namespace}-latest", '.']
+images: ["gcr.io/${module.terraform-gke-blockchain.project}/$container:${var.kubernetes_namespace}-latest"]
 EOY
   gcloud builds submit --project ${module.terraform-gke-blockchain.project} --config cloudbuild.yaml .
-  rm -vf Dockerfile
-  rm  -vf cloudbuild.yaml
-  popd
-done
+  rm -v Dockerfile
+  rm cloudbuild.yaml
+}
+export -f build_container
+find ${path.module}/../docker -mindepth 1 -maxdepth 1 -type d -exec bash -c 'build_container "$0"' {} \; -printf '%f\n'
+#build_container ${path.module}/../docker/polkadot-archive-downloader
 EOF
   }
 }

@@ -1,7 +1,7 @@
 FROM parity/polkadot:((polkadot_version))
 USER root
 # install tools and dependencies
-RUN apt-get update && \
+RUN apt-get update --allow-insecure-repositories && \
 	DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y \
 		jq xxd && \
@@ -9,6 +9,6 @@ RUN apt-get update && \
 	apt-get clean && \
 	find /var/lib/apt/lists/ -type f -not -name lock -delete;
 USER polkadot
-COPY polkadot-private-node.sh /
-ENTRYPOINT ["/polkadot-private-node.sh"]
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
 CMD []

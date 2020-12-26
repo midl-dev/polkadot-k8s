@@ -22,9 +22,10 @@ fi
 # unsafe flags are due to polkadot panic alerter needing to connect to the node with rpc
 eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --unsafe-pruning \
+         --out-peers=100 \
          --pruning=1000 \
          --prometheus-external \
-         --node-key-file /polkadot/k8s_local_node_key \
+         $node_key_param \
          $name_param \
          $telemetry_url_param \
          $chain_param

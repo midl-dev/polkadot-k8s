@@ -15,13 +15,13 @@ namePrefix: ${kubernetes_name_prefix}-
 imageTags:
   - name: polkadot-private-node
     newName: gcr.io/${project}/polkadot-private-node
-    newTag: latest
+    newTag: ${kubernetes_namespace}-latest
   - name: polkadot-archive-downloader
     newName: gcr.io/${project}/polkadot-archive-downloader
-    newTag: latest
+    newTag: ${kubernetes_namespace}-latest
   - name: polkadot-node-key-configurator
     newName: gcr.io/${project}/polkadot-node-key-configurator
-    newTag: latest
+    newTag: ${kubernetes_namespace}-latest
 
 configMapGenerator:
 - name: polkadot-configmap

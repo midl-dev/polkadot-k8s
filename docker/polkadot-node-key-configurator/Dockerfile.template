@@ -1,7 +1,7 @@
 FROM parity/polkadot:latest
 USER root
 # install tools and dependencies
-RUN apt-get update && \
+RUN apt-get update --allow-insecure-repositories && \
 	DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y \
 		xxd && \
@@ -11,7 +11,7 @@ RUN apt-get update && \
 RUN curl https://storage.googleapis.com/polkadot259c91787f329be9_cloudbuild/subkey -o /usr/local/bin/subkey && \
   chmod 777 /usr/local/bin/subkey
 USER polkadot
-COPY polkadot-node-key-configurator.sh /
-ENTRYPOINT ["/polkadot-node-key-configurator.sh"]
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
 CMD []
 
