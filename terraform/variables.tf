@@ -11,7 +11,7 @@ variable "chain" {
 variable "polkadot_archive_url" {
   type        = string
   description = "archive url"
-  default = "https://dot.polkashots.io/snapshot"
+  default = "https://dot-rocksdb.polkashots.io/snapshot"
 }
 
 variable "polkadot_telemetry_url" {
@@ -50,7 +50,7 @@ variable "org_id" {
 variable "region" {
   type        = string
   description = "GCP Region. Only necessary when creating cluster manually"
-  default = ""
+  default = "us-central1"
 }
 
 variable "node_locations" {

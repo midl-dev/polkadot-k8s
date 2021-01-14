@@ -13,6 +13,8 @@ Instead:
 * do not pass `project` as a variable when deploying the resources. Instead, pass `organization_id` and `billing_account` as variables
 * pass the service account credentials json file `serviceAccount:terraform@${TF_ADMIN}.iam.gserviceaccount.com` as `terraform_service_account_credentials` terraform variable
 
+This is [how to download the service account credentials json file](https://cloud.google.com/iam/docs/creating-managing-service-account-keys).
+
 That will create the cluster in a new project, created by the terraform service account.
 
 You may then grant people in your organization access to the project. It is recommended to write more terraform manifests to do so.
