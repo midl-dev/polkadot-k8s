@@ -10,7 +10,7 @@ Instead:
 
 * ensure that you have set up an Organization - that can be done by registering a domain name and adding it to gcloud
 * create a Terraform Admin Project, Terraform Service Account and Service Account Credentials following [this Google guide](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform)
-* do not pass `project` as a variable when deploying the resources. Instead, pass `organization_id` and `billing_account` as variables
+* do not pass `project` as a variable when deploying the resources. Instead, pass `org_id` and `billing_account` as variables
 * pass the service account credentials json file `serviceAccount:terraform@${TF_ADMIN}.iam.gserviceaccount.com` as `terraform_service_account_credentials` terraform variable
 
 This is [how to download the service account credentials json file](https://cloud.google.com/iam/docs/creating-managing-service-account-keys).
