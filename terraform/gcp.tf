@@ -17,7 +17,6 @@ data "google_client_config" "current" {
 
 # This file contains all the interactions with Kubernetes
 provider "kubernetes" {
-  load_config_file = false
   host             = module.terraform-gke-blockchain.kubernetes_endpoint
   cluster_ca_certificate = module.terraform-gke-blockchain.cluster_ca_certificate
   token = data.google_client_config.current.access_token
