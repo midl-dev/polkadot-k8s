@@ -113,6 +113,7 @@ ${templatefile("${path.module}/../k8s/kustomization.yaml.tmpl",
        "polkadot_telemetry_url": var.polkadot_telemetry_url,
        "polkadot_validator_name": var.polkadot_validator_name,
        "chain": var.chain,
+       "out_peers": var.out_peers,
        "kubernetes_namespace": var.kubernetes_namespace,
        "kubernetes_name_prefix": var.kubernetes_name_prefix})}
 EOK

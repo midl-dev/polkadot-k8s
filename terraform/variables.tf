@@ -19,6 +19,12 @@ variable "polkadot_telemetry_url" {
   description = "url of the telemetry server the polkadot nodes report to"
 }
 
+variable "out_peers" {
+  type        = string
+  description = "number of outgoing connections to be established with remote peers"
+  default = ""
+}
+
 variable "polkadot_validator_name" {
   type        = string
   description = "name of the validator shown on the public telemetry server"
