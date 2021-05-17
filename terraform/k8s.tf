@@ -129,6 +129,9 @@ EORPP
 cat <<EONPN > nodepool.yaml
 ${templatefile("${path.module}/../k8s/nodepool.yaml.tmpl", {"kubernetes_pool_name": var.kubernetes_pool_name})}
 EONPN
+cat <<EOLIA > lb_ip_patch.yaml
+${templatefile("${path.module}/../k8s/lb_ip_patch.yaml.tmpl", {"p2p_ip": var.p2p_ip, "p2p_port": var.p2p_port})}
+EOLIA
 kubectl apply -k .
 popd
 rm -rvf ${path.module}/k8s-${var.kubernetes_namespace}

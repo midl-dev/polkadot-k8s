@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: private-node-p2p
+spec:
+  ports:
+  - port: ${p2p_port}
+    name: dot-p2p-port
+  loadBalancerIP: ${p2p_ip}

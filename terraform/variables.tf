@@ -124,3 +124,13 @@ variable "kubernetes_pool_name" {
   description = "when kubernetes cluster has several node pools, specify which ones to deploy the baking setup into. only effective when deploying on an external cluster with terraform_no_cluster_create"
   default = "blockchain-pool"
 }
+
+variable "p2p_ip" {
+  type = string
+  description = "p2p ip to pass to load balancer"
+}
+
+variable "p2p_port" {
+  type = string
+  description = "p2p port to pass to load balancer"
+}

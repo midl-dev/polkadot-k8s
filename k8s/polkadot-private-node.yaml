@@ -20,11 +20,23 @@ spec:
     name: rpc
   - port: 9615
     name: metrics
-  - port: 30333
-    name: p2p
   selector:
     app: private-node
   clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: private-node-p2p
+  labels:
+    app: private-node
+  annotations:
+    cloud.google.com/network-tier: Standard
+spec:
+  ports:
+  selector:
+    app: private-node
+  type: LoadBalancer
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
