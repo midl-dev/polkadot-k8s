@@ -23,6 +23,10 @@ if [ ! -z "$TELEMETRY_URL" ]; then
     telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 0\""
 fi
 
+if [ ! -z "$PUBLIC_MULTIADDR" ]; then
+    public_address_param="--public-addr=${PUBLIC_MULTIADDR}"
+fi
+
 # unsafe flags are due to polkadot panic alerter needing to connect to the node with rpc
 eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --unsafe-pruning \
@@ -32,4 +36,5 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          $node_key_param \
          $name_param \
          $telemetry_url_param \
-         $chain_param
+         $chain_param \
+         $public_address_param

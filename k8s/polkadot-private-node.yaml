@@ -33,7 +33,6 @@ metadata:
   annotations:
     cloud.google.com/network-tier: Standard
 spec:
-  ports:
   selector:
     app: private-node
   type: LoadBalancer
@@ -53,46 +52,6 @@ spec:
   selector:
     matchLabels:
       app: private-node
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: polkadot-private-node-policy
-  namespace: default
-spec:
-  podSelector:
-    matchLabels:
-      app: private-node
-  policyTypes:
-  - Ingress
-  - Egress
-  egress:
-  - ports:
-    - port: 53
-      protocol: TCP
-    - port: 53
-      protocol: UDP
-    - port: 443
-      protocol: TCP
-    - port: 30333
-      protocol: TCP
-    - port: 30334
-      protocol: TCP
-    - port: 30100
-      protocol: TCP
-  ingress:
-  - ports:
-    - port: 30333
-      protocol: TCP
-  - ports:
-    - port: 9615
-      protocol: TCP
-    from:
-    - namespaceSelector:
-        matchLabels: {}
-      podSelector:
-        matchLabels:
-          app: prometheus
 ---
 apiVersion: apps/v1
 kind: StatefulSet

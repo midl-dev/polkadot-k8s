@@ -5,5 +5,7 @@ metadata:
 spec:
   ports:
   - port: ${p2p_port}
+    targetPort: 30333
+    protocol: TCP
     name: dot-p2p-port
   loadBalancerIP: ${p2p_ip}
