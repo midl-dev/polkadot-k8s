@@ -114,7 +114,7 @@ ${templatefile("${path.module}/../k8s/kustomization.yaml.tmpl",
        "polkadot_validator_name": var.polkadot_validator_name,
        "chain": var.chain,
        "out_peers": var.out_peers,
-       "p2p_port": "30333",
+       "p2p_port": var.p2p_port,
        "p2p_ip": var.p2p_ip,
        "kubernetes_namespace": var.kubernetes_namespace,
        "kubernetes_name_prefix": var.kubernetes_name_prefix})}
