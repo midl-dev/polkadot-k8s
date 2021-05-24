@@ -1,8 +1,7 @@
-FROM parity/polkadot:latest
+FROM parity/polkadot:((polkadot_version))
 USER root
 # install tools and dependencies
 RUN apt-get update --allow-insecure-repositories && \
-	DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y \
 		xxd && \
 	apt-get autoremove -y && \
