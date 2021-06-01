@@ -30,6 +30,7 @@ configMapGenerator:
       - TELEMETRY_URL="${polkadot_telemetry_url}"
       - VALIDATOR_NAME="${polkadot_validator_name}"
       - OUT_PEERS="${out_peers}"
+      - IN_PEERS="${in_peers}"
       - CHAIN="${chain}"
       - PUBLIC_MULTIADDR="/ip4/${p2p_ip}/tcp/${p2p_port}"
       - KUBERNETES_NAME_PREFIX="${kubernetes_name_prefix}"

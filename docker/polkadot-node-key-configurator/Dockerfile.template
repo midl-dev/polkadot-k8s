@@ -1,4 +1,4 @@
-FROM parity/polkadot:((polkadot_version))
+FROM parity/subkey:2.0.0
 USER root
 # install tools and dependencies
 RUN apt-get update --allow-insecure-repositories && \
@@ -7,9 +7,6 @@ RUN apt-get update --allow-insecure-repositories && \
 	apt-get autoremove -y && \
 	apt-get clean && \
 	find /var/lib/apt/lists/ -type f -not -name lock -delete;
-RUN curl https://storage.googleapis.com/polkadot259c91787f329be9_cloudbuild/subkey -o /usr/local/bin/subkey && \
-  chmod 777 /usr/local/bin/subkey
-USER polkadot
 COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []

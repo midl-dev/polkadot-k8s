@@ -29,7 +29,7 @@ EOY
 }
 export -f build_container
 find ${path.module}/../docker -mindepth 1 -maxdepth 1 -type d -exec bash -c 'build_container "$0"' {} \; -printf '%f\n'
-#build_container ${path.module}/../docker/polkadot-archive-downloader
+#build_container ${path.module}/../docker/polkadot-node-key-configurator
 EOF
   }
 }
@@ -89,8 +89,7 @@ resource "kubernetes_secret" "polkadot_node_keys" {
     name = "polkadot-node-keys"
     namespace = var.kubernetes_namespace
   }
-  data = {
-    "${var.kubernetes_name_prefix}-private-node-0" : lookup(var.polkadot_node_keys, "polkadot-private-node-0", length(random_password.private-node-0-key) == 1 ? random_password.private-node-0-key[0].result : "") }
+  data = var.polkadot_node_keys
   depends_on = [ kubernetes_namespace.polkadot_namespace ]
 }
 
@@ -114,6 +113,7 @@ ${templatefile("${path.module}/../k8s/kustomization.yaml.tmpl",
        "polkadot_validator_name": var.polkadot_validator_name,
        "chain": var.chain,
        "out_peers": var.out_peers,
+       "in_peers": var.in_peers,
        "p2p_port": var.p2p_port,
        "p2p_ip": var.p2p_ip,
        "kubernetes_namespace": var.kubernetes_namespace,

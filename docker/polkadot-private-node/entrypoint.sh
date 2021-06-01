@@ -3,8 +3,8 @@
 set -e
 set -x
 
-if [ -e /polkadot-node-keys/$(hostname) ]; then
-    node_key_param="--node-key $(cat /polkadot-node-keys/$(hostname))"
+if [ -e /polkadot/k8s_local_node_key ]; then
+    node_key_param="--node-key-file /polkadot/k8s_local_node_key"
 fi
 
 if [ ! -z "$VALIDATOR_NAME" ]; then
@@ -13,6 +13,10 @@ fi
 
 if [ ! -z "$CHAIN" ]; then
     chain_param="--chain \"$CHAIN\""
+fi
+
+if [ ! -z "$IN_PEERS" ]; then
+    in_peers_param="--in-peers=${IN_PEERS}"
 fi
 
 if [ ! -z "$OUT_PEERS" ]; then
@@ -33,6 +37,7 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --pruning=1000 \
          --prometheus-external \
          $out_peers_param \
+         $in_peers_param \
          $node_key_param \
          $name_param \
          $telemetry_url_param \
