@@ -123,8 +123,6 @@ spec:
         volumeMounts:
         - name: polkadot-private-node-pv-claim
           mountPath: /polkadot
-        - name: polkadot-node-keys
-          mountPath: /polkadot-node-keys
         envFrom:
         - configMapRef:
             name: polkadot-configmap
