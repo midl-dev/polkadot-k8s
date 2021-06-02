@@ -7,6 +7,10 @@ if [ -e /polkadot/k8s_local_node_key ]; then
     node_key_param="--node-key-file /polkadot/k8s_local_node_key"
 fi
 
+if [ -e /polkadot/k8s_local_peer_cmd ]; then
+    local_peer_param="$(cat /polkadot/k8s_local_peer_cmd)"
+fi
+
 if [ ! -z "$VALIDATOR_NAME" ]; then
     name_param="--name \"$VALIDATOR_NAME\""
 fi
@@ -42,4 +46,5 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          $name_param \
          $telemetry_url_param \
          $chain_param \
-         $public_address_param
+         $public_address_param \
+         $local_peer_param

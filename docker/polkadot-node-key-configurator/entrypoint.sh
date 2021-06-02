@@ -13,9 +13,15 @@ cat /polkadot-node-keys/${KUBERNETES_NAME_PREFIX} | xxd -r -p > /polkadot/k8s_lo
 chown 1000 /polkadot/k8s_local_node_key
 chmod 400 /polkadot/k8s_local_node_key
 
+
 # write public keys for all peers in an env file, to be sourced by polkadot startup script
 local_peers=("${LOCAL_PEERS}")
+echo "--reserved-nodes " > /polkadot/k8s_local_peer_cmd
 for node in ${local_peers[@]}
 do
-    echo $(subkey inspect-node-key --file /polkadot-node-keys/$node) > /polkadot/k8s_node_ids/$node
+    # do not peer with myself
+    if [ "${node}" != "${KUBERNETES_NAME_PREFIX}" ]
+    then
+        echo "/dns4/${node}-private-node-0.${node}-private-node.${node}/tcp/30333/p2p/$(subkey inspect-node-key --file /polkadot-node-keys/$node) " >> /polkadot/k8s_local_peer_cmd
+    fi
 done
