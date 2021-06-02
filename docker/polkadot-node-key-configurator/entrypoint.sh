@@ -13,11 +13,9 @@ cat /polkadot-node-keys/${KUBERNETES_NAME_PREFIX} | xxd -r -p > /polkadot/k8s_lo
 chown 1000 /polkadot/k8s_local_node_key
 chmod 400 /polkadot/k8s_local_node_key
 
-# write public keys for all nodes in an env file, to be sourced by polkadot startup script
-nodes=("${PEER_NODES}")
-for node in ${nodes[@]}
+# write public keys for all peers in an env file, to be sourced by polkadot startup script
+local_peers=("${LOCAL_PEERS}")
+for node in ${local_peers[@]}
 do
-    cat /polkadot-node-keys/$node | xxd -r -p - > /tmp/polkadot-key
-    echo $(subkey inspect-node-key /tmp/polkadot-key) > /polkadot/k8s_node_ids/$node
-    rm -v /tmp/polkadot-key
+    echo $(subkey inspect-node-key --file /polkadot-node-keys/$node) > /polkadot/k8s_node_ids/$node
 done

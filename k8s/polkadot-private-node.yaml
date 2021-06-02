@@ -144,12 +144,9 @@ spec:
           mountPath: /polkadot
         - name: polkadot-node-keys
           mountPath: /polkadot-node-keys
-        env:
-        - name: KUBERNETES_NAME_PREFIX
-          valueFrom:
-            configMapKeyRef:
-              name: polkadot-configmap
-              key: KUBERNETES_NAME_PREFIX
+        envFrom:
+        - configMapRef:
+            name: polkadot-configmap
         imagePullPolicy: Always
       - name: polkadot-archive-downloader
         image: polkadot-archive-downloader

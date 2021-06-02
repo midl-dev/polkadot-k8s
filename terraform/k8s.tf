@@ -28,8 +28,8 @@ EOY
   rm cloudbuild.yaml
 }
 export -f build_container
-find ${path.module}/../docker -mindepth 1 -maxdepth 1 -type d -exec bash -c 'build_container "$0"' {} \; -printf '%f\n'
-#build_container ${path.module}/../docker/polkadot-node-key-configurator
+#find ${path.module}/../docker -mindepth 1 -maxdepth 1 -type d -exec bash -c 'build_container "$0"' {} \; -printf '%f\n'
+build_container ${path.module}/../docker/polkadot-node-key-configurator
 EOF
   }
 }
@@ -114,6 +114,7 @@ ${templatefile("${path.module}/../k8s/kustomization.yaml.tmpl",
        "chain": var.chain,
        "out_peers": var.out_peers,
        "in_peers": var.in_peers,
+       "local_peers": join(" ", keys(var.polkadot_node_keys)),
        "p2p_port": var.p2p_port,
        "p2p_ip": var.p2p_ip,
        "kubernetes_namespace": var.kubernetes_namespace,

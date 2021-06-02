@@ -34,6 +34,7 @@ configMapGenerator:
       - CHAIN="${chain}"
       - PUBLIC_MULTIADDR="/ip4/${p2p_ip}/tcp/${p2p_port}"
       - KUBERNETES_NAME_PREFIX="${kubernetes_name_prefix}"
+      - LOCAL_PEERS="${local_peers}"
 
 patchesStrategicMerge:
 - prefixedpv.yaml
