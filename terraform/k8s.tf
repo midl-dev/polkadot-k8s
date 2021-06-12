@@ -122,7 +122,8 @@ ${templatefile("${path.module}/../k8s/kustomization.yaml.tmpl",
 EOK
 cat <<EOK > prefixedpv.yaml
 ${templatefile("${path.module}/../k8s/prefixedpv.yaml.tmpl",
-     { "kubernetes_name_prefix": var.kubernetes_name_prefix})}
+     { "kubernetes_name_prefix": var.kubernetes_name_prefix,
+       "storage_size": var.storage_size})}
 EOK
 cat <<EORPP > regionalpvpatch.yaml
 ${templatefile("${path.module}/../k8s/regionalpvpatch.yaml.tmpl",

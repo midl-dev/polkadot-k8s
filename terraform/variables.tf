@@ -140,3 +140,9 @@ variable "p2p_port" {
   type = string
   description = "p2p port to pass to load balancer"
 }
+
+variable "storage_size" {
+  type = string
+  description = "Size of backend storage for validator in Gi"
+  default = "25"
+}
