@@ -126,4 +126,4 @@ jobs:
           token: ${{ secrets.CI_GITHUB_TOKEN }}
           branch: main
           owner: ${{ github.repository_owner }}
-          repository: charts
+          repository: git@github.com:midl-dev/charts.git
