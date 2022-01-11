@@ -18,10 +18,7 @@ else
     echo "Did not find pre-existing data, importing blockchain"
     mkdir -p /polkadot/.local/share/polkadot/chains/${chain_dir}/
     echo "Will download $ARCHIVE_URL"
-    curl -L $ARCHIVE_URL -o /polkadot/polkadot_archive.7z
-    7z x /polkadot/polkadot_archive.7z -o/polkadot/.local/share/polkadot/chains/${chain_dir}
-    rm -v /polkadot/polkadot_archive.7z
+    curl -o - -L $ARCHIVE_URL | lz4 -c -d - | tar -x -C /polkadot/.local/share/polkadot/chains/${chain_dir}
     chmod -R 777 /polkadot/.local/
     chown -R 1000:1000 /polkadot/.local/
-    find /polkadot/.local/share/
 fi
