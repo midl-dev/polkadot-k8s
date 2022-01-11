@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  push:
+    # Trigger CI on all branch pushes but...
+    branches:
+      - "**"
+    # don't double trigger on new tag push when creating release. Should only
+    # trigger once for the release.
+    tags-ignore:
+      - "*.*.*"
+  pull_request:
+  release:
+    types: [created]
+
+jobs:
+
+  list_containers_to_publish:
+    # based on
+    # https://stackoverflow.com/a/62953566/207209
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen-containers-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: gen-containers-matrix
+        run: |
+          container_list=$(jq -c -n --arg cont "$(find -name 'Dockerfile' -printf '%h\n' | sort -u | sed 's/.\///')" '{ container: $cont | split("\n")}')
+          echo "Dynamically generated container list based on subdirectories of the repo with a dockerfile in it. The following list will be passed to next build step:"
+          echo $container_list
+          echo "::set-output name=matrix::$container_list"
+
+  publish_containers:
+    # based on
+    # https://github.com/docker/build-push-action#usage
+    runs-on: ubuntu-latest
+    needs: list_containers_to_publish
+    if: github.event_name == 'release' && github.event.action == 'created'
+    strategy:
+      matrix: ${{fromJson(needs.list_containers_to_publish.outputs.matrix)}}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Login to registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/${{ matrix.container }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=match,pattern=v(.*),group=1
+
+    - name: Push to GHCR
+      uses: docker/build-push-action@v2
+      with:
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+  lint_helm_charts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.2
+
+      - name: Lint Helm Charts
+        run: helm lint charts/*
+
+  publish_helm_charts:
+    runs-on: ubuntu-latest
+    needs: [lint_helm_charts, publish_containers]
+    if: github.event_name == 'release' && github.event.action == 'created'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install yq
+        run: |
+          sudo wget -q https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Get Release Version
+        id: get_release_version
+        run: echo "::set-output name=RELEASE_VERSION::${GITHUB_REF/refs\/tags\//}"
+
+      - name: Set Helm Chart and Image Versions
+        run: |
+          set -x
+
+          RELEASE_VERSION=${{ steps.get_release_version.outputs.RELEASE_VERSION }}
+
+          for chart in charts/*; do
+            [[ ! -d "$chart" ]] && continue
+            echo $chart
+
+            # Update Chart.yaml with release version
+            yq e ".version = \"$RELEASE_VERSION\"" -i "$chart/Chart.yaml"
+
+            # Get midl-dev/polkadot-k8s images specified in values.yaml
+            custom_images=$(yq e '(.polkadot_k8s_images[]) | path | .[-1]' "$chart/values.yaml")
+
+            # Update the release version of each of polkadot-k8s images
+            for image in $custom_images; do
+              image_name=$(yq e ".polkadot_k8s_images.$image" $chart/values.yaml | sed -E "s/polkadot-k8s-(.*):.*/\1/")
+              yq e ".polkadot_k8s_images.$image = \"midl-dev/polkadot-k8s-$image_name:$RELEASE_VERSION\"" -i $chart/values.yaml
+            done
+          done
+
+      - name: Publish Helm charts
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          linting: off # We already linted in a job before
+          token: ${{ secrets.CI_GITHUB_TOKEN }}
+          branch: main
+          owner: ${{ github.repository_owner }}
+          repository: charts

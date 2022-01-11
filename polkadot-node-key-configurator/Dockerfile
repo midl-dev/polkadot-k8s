@@ -10,4 +10,3 @@ RUN apt-get update --allow-insecure-repositories && \
 COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
-

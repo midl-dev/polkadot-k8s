@@ -35,11 +35,12 @@ if [ ! -z "$PUBLIC_MULTIADDR" ]; then
     public_address_param="--public-addr=${PUBLIC_MULTIADDR}"
 fi
 
-# unsafe flags are due to polkadot panic alerter needing to connect to the node with rpc
+# sleep 1000
 eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --unsafe-pruning \
          --pruning=1000 \
          --prometheus-external \
+          --execution native \
          $out_peers_param \
          $in_peers_param \
          $node_key_param \

@@ -1,0 +1,106 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: polkadot-node
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: polkadot-node
+  serviceName: polkadot-node
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: polkadot-node
+    spec:
+      nodeSelector:
+ {{ toYaml .Values.node_selector | indent 8 }}
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: polkadot-node
+        image: {{ .Values.images.polkadot_node }}
+        command:
+          - /bin/bash
+        args:
+          - "-c"
+          - |
+{{ tpl (.Files.Get "scripts/polkadot-node.sh") . | indent 12 }}
+        ports:
+        - containerPort: 9933
+          name: dot-rpc-port
+        - containerPort: 9615
+          name: metrics
+        - containerPort: {{ .Values.p2p_port }}
+          name: dot-p2p-port
+        volumeMounts:
+        - name: polkadot-node-pv-claim
+          mountPath: /polkadot
+        envFrom:
+        - configMapRef:
+            name: polkadot-configmap
+        resources:
+          limits:
+            cpu: 0
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          periodSeconds: 30
+          timeoutSeconds: 10
+          httpGet:
+            path: /is_synced
+            port: 31764
+      - name: polkadot-sidecar
+        image: {{ .Values.polkadot_k8s_images.polkadot_sidecar }}
+        resources:
+          limits:
+            cpu: 0
+        imagePullPolicy: Always
+      initContainers:
+      - name: polkadot-node-key-configurator
+        image: {{ .Values.polkadot_k8s_images.polkadot_node_key_configurator }}
+        volumeMounts:
+        - name: polkadot-node-pv-claim
+          mountPath: /polkadot
+        - name: polkadot-node-keys
+          mountPath: /polkadot-node-keys
+        envFrom:
+        - configMapRef:
+            name: polkadot-configmap
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 0
+      - name: polkadot-archive-downloader
+        image: {{ .Values.polkadot_k8s_images.polkadot_archive_downloader }}
+        volumeMounts:
+        - name: polkadot-node-pv-claim
+          mountPath: /polkadot
+        env:
+        - name: CHAIN
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: CHAIN
+        - name: ARCHIVE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: polkadot-configmap
+              key: ARCHIVE_URL
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 0
+      volumes:
+      - name: polkadot-node-keys
+        secret:
+          secretName: polkadot-node-keys
+  volumeClaimTemplates:
+  - metadata:
+      name: polkadot-node-pv-claim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.vol_size }}Gi
