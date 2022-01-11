@@ -110,7 +110,7 @@ jobs:
             # Update the release version of each of polkadot-k8s images
             for image in $custom_images; do
               image_name=$(yq e ".polkadot_k8s_images.$image" $chart/values.yaml | sed -E "s/polkadot-(.*):.*/\1/")
-              yq e ".polkadot_k8s_images.$image = \"ghcr.io/midl-dev/polkadot-$image_name:$RELEASE_VERSION\"" -i $chart/values.yaml
+              yq e ".polkadot_k8s_images.$image = \"ghcr.io/midl-dev/polkadot-$image_name:$(echo $RELEASE_VERSION | sed s/v//)\"" -i $chart/values.yaml
             done
           done
 
