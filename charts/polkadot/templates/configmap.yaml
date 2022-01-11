@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+data:
+  ARCHIVE_URL: "{{ .Values.polkadot_archive_url }}"
+  TELEMETRY_URL: "{{ .Values.polkadot_telemetry_url }}"
+  VALIDATOR_NAME: "{{ .Values.polkadot_validator_name }}"
+  OUT_PEERS: "{{ .Values.number_of_out_peers }}"
+  IN_PEERS: "{{ .Values.number_of_in_peers }}"
+  CHAIN: "{{ .Values.chain}}"
+  NAMESPACE: "{{ .Release.Namespace }}"
+  PUBLIC_MULTIADDR: "/ip4/{{ .Values.p2p_ip }}/tcp/{{ .Values.p2p_port }}"
+kind: ConfigMap
+metadata:
+  name: polkadot-configmap
+  namespace: {{ .Release.Namespace }}

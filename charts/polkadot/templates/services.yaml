@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: private-node
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: polkadot-node
+spec:
+  ports:
+  - port: 9933
+    name: rpc
+  - port: 9615
+    name: metrics
+  selector:
+    app: polkadot-node
+  clusterIP: None

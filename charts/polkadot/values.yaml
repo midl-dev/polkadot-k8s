@@ -1,0 +1,39 @@
+# Images not part of the tezos-k8s repo go here
+images:
+  polkadot_node: "paritytech/polkadot:latest"
+# Images that are part of the polkadot-k8s repo go here with 'latest' tag
+polkadot_k8s_images:
+  polkadot_archive_downloader: midl/polkadot_archive_downloader
+  polkadot_node_key_configurator: midl/polkadot_node_key_configurator
+  polkadot_sidecar: midl/polkadot-sidecar:latest
+
+polkadot_archive_url: https://ksm-rocksdb.polkashots.io/snapshot
+
+polkadot_telemetry_url: null
+
+polkadot_validator_name: polkadot_k8s_pulumi
+
+number_of_out_peers: 10
+
+number_of_in_peers: 10
+
+chain: kusama
+
+# list of peers to always connect to. could be polkadot nodes in different namespaces
+# should be a list of key-value pairs with the key as namespace name and the value as private network key
+local_nodes: {}
+
+# if provided, this will be passed as the public ip/port combination of the node
+# If you have an ingress network load balancer ip sending p2p traffic to the node, set this to its address/port
+p2p_ip: null 
+p2p_port: 30333
+
+# to deploy in a specific node pool, put label here
+node_selector: {}
+
+# vol size (in Gi)
+# Applies to the statefulset's PVC template.
+# consequently this value only applies for creation.
+# It is not possible to resize the volume by editing this value.
+# Instead, you must resize the pvc directly.
+vol_size: 50
