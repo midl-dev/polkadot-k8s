@@ -1,1 +1,0 @@
-../terraform/k8s.tf
