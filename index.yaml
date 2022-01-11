@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  polkadot:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-01-11T05:30:08.478148208Z"
+    description: A Helm chart for Kubernetes
+    digest: 53adc5787603a751c6dad69138e2e2486c6cc4f596b492c3885796692f577629
+    name: polkadot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-v3.3.tgz
+    version: v3.3
+generated: "2022-01-11T05:30:08.477581127Z"
