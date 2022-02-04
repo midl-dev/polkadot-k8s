@@ -8,7 +8,7 @@ else
     chain_dir=ksmcc3
 fi
 
-if [ -d /polkadot/.local/share/polkadot/chains/${chain_dir}/db/ ]; then
+if [ -d /polkadot/.local/share/polkadot/chains/${chain_dir}/*db/ ]; then
     echo "Blockchain database already exists, no need to import, exiting"
     exit 0
 elif [ -z "$ARCHIVE_URL" ]; then
