@@ -1,0 +1,46 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: polkadot-payout-cron
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.cron_schedule }}
+  concurrencyPolicy:  Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: polkadot-payout-cron
+        spec:
+          nodeSelector:
+ {{ toYaml .Values.node_selector | indent 12 }}
+          containers:
+          - name: payout-cron
+            image: {{ .Values.polkadot_k8s_images.payout_cron }}
+            env:
+            - name: PAYOUT_ACCOUNT_MNEMONIC
+              valueFrom:
+                secretKeyRef:
+                  name: polkadot-payout-secrets
+                  key: payout-account-mnemonic
+            - name: "SLACK_ALERT_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: polkadot-payout-secrets
+                  key: slack-alert-token
+            - name: "STASH_ACCOUNT_ADDRESS"
+              value: "{{ .Values.stash_account_address }}"
+            - name: "STASH_ACCOUNT_ALIAS"
+              value: "{{ .Values.stash_account_alias }}"
+            - name: "SLACK_ALERT_CHANNEL"
+              value: "{{ .Values.slack_alert_channel }}"
+            - name: "NODE_ENDPOINT"
+              value: "{{ .Values.node_endpoint }}"
+            - name: "NUM_PAST_ERAS"
+              value: "{{ .Values.num_past_eras }}"
+            resources:
+              limits:
+                cpu: 0
+            imagePullPolicy: Always
+          restartPolicy: OnFailure
