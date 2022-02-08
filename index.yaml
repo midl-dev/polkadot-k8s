@@ -3,6 +3,16 @@ entries:
   polkadot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-02-08T03:21:44.728353957Z"
+    description: A Helm chart for Kubernetes
+    digest: 22c9804700105326121c1f084d843c06ecc234fbd97dde141d23c720ce4b415a
+    name: polkadot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-v5.1.tgz
+    version: v5.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-02-05T02:16:15.949488947Z"
     description: A Helm chart for Kubernetes
     digest: a744702cb8ab496a3f2f2397249d983c8480f988b5717893dc715fdac7d91d7b
@@ -64,6 +74,16 @@ entries:
   polkadot-payout:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-02-08T03:21:44.727774953Z"
+    description: A Helm chart for Kubernetes
+    digest: edfa8b06f483b39783545a09161b2fc92ceac9ff26e3b838aadda6f68750a71b
+    name: polkadot-payout
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-payout-v5.1.tgz
+    version: v5.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-02-05T02:16:15.949109944Z"
     description: A Helm chart for Kubernetes
     digest: 5bee45abf3e856a6dbe4df3de362766fcc262ef4072b6280fab9c79f466dacb3
@@ -72,4 +92,4 @@ entries:
     urls:
     - https://midl-dev.github.io/polkadot-k8s/polkadot-payout-v5.0.tgz
     version: v5.0
-generated: "2022-02-05T02:16:15.948662741Z"
+generated: "2022-02-08T03:21:44.727100048Z"
