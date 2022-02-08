@@ -16,8 +16,8 @@ spec:
           nodeSelector:
  {{ toYaml .Values.node_selector | indent 12 }}
           containers:
-          - name: payout-cron
-            image: {{ .Values.polkadot_k8s_images.payout_cron }}
+          - name: polkadot-payout-cron
+            image: {{ .Values.polkadot_k8s_images.polkadot_payout_cron }}
             env:
             - name: PAYOUT_ACCOUNT_MNEMONIC
               valueFrom:

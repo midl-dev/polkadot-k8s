@@ -1,5 +1,5 @@
 polkadot_k8s_images:
-  payout_cron: payout-cron:dev
+  polkadot_payout_cron: polkadot-payout-cron:dev
 # to deploy in a specific node pool, put label here
 node_selector: {}
 stash_account_address: "your stash"
