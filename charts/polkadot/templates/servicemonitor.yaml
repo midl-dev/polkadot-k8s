@@ -1,3 +1,4 @@
+{{- if .Values.deploy_service_monitor }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -13,3 +14,4 @@ spec:
   selector:
     matchLabels:
       app: polkadot-node
+{{- end }}
