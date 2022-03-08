@@ -75,6 +75,7 @@ async function main () {
   const payout_alias = process.env.PAYOUT_ACCOUNT_ALIAS; //optional
   const num_past_eras = parseInt(process.env.NUM_PAST_ERAS);
   const chain = process.env.CHAIN;
+  // https://wiki.polkadot.network/docs/build-ss58-registry
   const chain_ss58_prefix = ( chain == "kusama") ? 2 : 0
   const payout_account = encodeAddress(payoutKey.address, chain_ss58_prefix);
   var controller_address = await api.query.staking.bonded(stash_account);
