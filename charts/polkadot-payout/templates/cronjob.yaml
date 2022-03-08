@@ -39,6 +39,10 @@ spec:
               value: "{{ .Values.node_endpoint }}"
             - name: "NUM_PAST_ERAS"
               value: "{{ .Values.num_past_eras }}"
+            - name: "PAYOUT_ACCOUNT_ALIAS"
+              value: "{{ .Values.payout_account_alias }}"
+            - name: "CHAIN"
+              value: "{{ .Values.chain }}"
             resources:
               limits:
                 cpu: 0
