@@ -1,0 +1,22 @@
+polkadot_k8s_images:
+  polkadot_votebot_cron: polkadot-votebot-cron:dev
+# to deploy in a specific node pool, put label here
+node_selector: {}
+stash_account_address: "your validator stash account on-chain address"
+stash_account_alias: "an alias so you recognize your account when getting an alert (if you have several"
+proxy_account_alias: "an alias for the proxy account (displayed in the logs for convenience)"
+slack_alert_channel: "the slack channel where you want to receive the alert"
+node_endpoint: "the uri of the polkadot node used to send the vote operation"
+
+# the repository where you keep your vote suggestions metadata
+vote_repo: "midl-dev/dotsama-votes"
+
+# chain: kusama or polkadot
+chain: "kusama"
+
+# schedule in cron format. example below: every 3 hours, 2 minutes past the hour
+cron_schedule: "2 */3 * * *"
+
+# sensitive
+proxy_account_mnemonic: "12 word secret seed for your proxy account. it must be registered on-chain as goverenane proxy for your stash. put very little money on it"
+slack_alert_token: "the token to connect to slack and send alerts"

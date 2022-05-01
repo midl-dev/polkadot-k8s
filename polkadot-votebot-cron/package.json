@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "npx tsc -d"
+  },
   "dependencies": {
     "@polkadot/api": "^8.1.1",
     "@polkadot/types-augment": "^8.1.1",

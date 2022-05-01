@@ -6,6 +6,8 @@ Features:
 
 * compatible with Kusama and Polkadot
 * download and import a [pre-synced database](https://polkashots.io) for faster synchronization of the node
+* includes a [payout cronjob](charts/polkadot-payout) for automated payouts
+* includes a [vote bot](charts/polkadot-votebot) for easy governance voting
 
 Brought to you by MIDL.dev
 --------------------------
