@@ -14,7 +14,7 @@ spec:
             app: polkadot-votebot-cron
         spec:
           nodeSelector:
- {{ toYaml .Values.node_selector | indent 12 }}
+{{ toYaml .Values.node_selector | indent 12 }}
           containers:
           - name: polkadot-votebot-cron
             image: {{ .Values.polkadot_k8s_images.polkadot_votebot_cron }}
@@ -46,5 +46,5 @@ spec:
             resources:
               limits:
                 cpu: 0
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
           restartPolicy: OnFailure

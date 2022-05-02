@@ -56,7 +56,7 @@ spec:
         resources:
           limits:
             cpu: 0
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
       initContainers:
       - name: polkadot-node-key-configurator
         image: {{ .Values.polkadot_k8s_images.polkadot_node_key_configurator }}
