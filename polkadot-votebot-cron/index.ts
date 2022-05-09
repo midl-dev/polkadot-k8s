@@ -171,9 +171,12 @@ async function main() {
           console.log("extrinsic success in finalized block, exiting")
           process.exit(0);
         }
-      } else if (status.isInvalid || status.isDropped || status.isRetracted) {
+      } else if (status.isInvalid || status.isDropped) {
         let slackMessage = `Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
         sendErrorToSlackAndExit(slackMessage);
+      } else if (status.isRetracted) {
+        // fail the job but do not alert. It is likely the transaction will go through at next try.
+        process.exit(1)
       }
     }));
   }
