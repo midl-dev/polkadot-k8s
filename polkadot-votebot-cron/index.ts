@@ -83,6 +83,7 @@ async function main() {
   let refCount = await api.query.democracy.referendumCount();
   let i: number = refCount.toU8a()[0];
   var referenda: any = [];
+  let ongoingRefs = [];
   while (true) {
     i = i - 1;
     var rawR = await api.query.democracy.referendumInfoOf(i);
@@ -90,6 +91,7 @@ async function main() {
 
     if ("ongoing" in r) {
       r["number"] = i;
+      ongoingRefs.push(i);
       console.log(`Current referenum ${i} found, ending at block ${r["ongoing"]["end"]}`);
       if (valVotes.includes(i)) {
         console.log(`But validator ${stash_alias} has already voted for referendum ${i}.`);
@@ -99,6 +101,15 @@ async function main() {
     } else {
       break;
     }
+  }
+
+  // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
+  let e = valVotes[0];
+  if (!ongoingRefs.includes(e)) {
+    console.log(`Now attempting to remove vote ${e}, since referendum has expired.`)
+    await api.tx.proxy.proxy(stash_account, "Governance", api.tx.democracy.removeVote(e)).signAndSend(voteBotKey, (async (result) => {
+      console.log('Transaction status:', result.status.type);
+    }))
   }
 
   if (referenda.length == 0) {
