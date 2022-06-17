@@ -3,6 +3,16 @@ entries:
   polkadot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-06-17T21:41:54.67023066Z"
+    description: A Helm chart for Kubernetes
+    digest: d6b56c01c7fecc226d989bf59da658f276515fa59bf2a8cc65f1f0efb8908535
+    name: polkadot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-v7.4.tgz
+    version: v7.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-06-16T17:19:39.57660716Z"
     description: A Helm chart for Kubernetes
     digest: 5dd11ffff9932cdb5065b6bb073b4409c8d8e59a1bb43d72a38064af0bf6d867
@@ -164,6 +174,16 @@ entries:
   polkadot-payout:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-06-17T21:41:54.669728549Z"
+    description: A Helm chart for Kubernetes
+    digest: 9506715a3e048d06902d8233cef53213c49b13f0686e5af8b82da114742d4a08
+    name: polkadot-payout
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-payout-v7.4.tgz
+    version: v7.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-06-16T17:19:39.575839596Z"
     description: A Helm chart for Kubernetes
     digest: 6c8196dbe5a0119f0293e4aa1d484763fbd6432d484293dc54e5026f77385945
@@ -275,6 +295,16 @@ entries:
   polkadot-votebot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-06-17T21:41:54.670628469Z"
+    description: A Helm chart for Kubernetes
+    digest: 0f078d803e99eae1ccd68477951f0026edf1ac8d04ce68736b6d46f441cde779
+    name: polkadot-votebot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v7.4.tgz
+    version: v7.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-06-16T17:19:39.576953489Z"
     description: A Helm chart for Kubernetes
     digest: 8e521c077bd460a344c6fed8666af3d2e803f41b0f0e6ef0bf1578f932a5efb8
@@ -313,4 +343,4 @@ entries:
     urls:
     - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v7.0.tgz
     version: v7.0
-generated: "2022-06-16T17:19:39.574112753Z"
+generated: "2022-06-17T21:41:54.66838002Z"
