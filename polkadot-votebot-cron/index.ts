@@ -103,7 +103,7 @@ async function main() {
     }
   }
 
-  if (referenda.length == 0) {
+  if (referenda.length == 0 && valVotes.length > 0) {
     console.log("All up-to-date with voting. Checking for expired referenda to remove...");
     // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
     let e = valVotes[0];
