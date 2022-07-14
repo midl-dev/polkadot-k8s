@@ -81,46 +81,49 @@ async function main() {
   console.log(`Validator ${stash_alias} already voted for referenda ${valVotes}.`);
 
   let refCount = await api.query.democracy.referendumCount();
-  let i: number = refCount.toU8a()[0];
   var referenda: any = [];
   let ongoingRefs = [];
-  while (true) {
-    i = i - 1;
-    var rawR = await api.query.democracy.referendumInfoOf(i);
-    let r = JSON.parse(JSON.stringify(rawR));
+  let i: number = refCount.toU8a()[0];
+  if (i) {
+    while (true) {
+      i = i - 1;
+      var rawR = await api.query.democracy.referendumInfoOf(i);
+      let r = JSON.parse(JSON.stringify(rawR));
 
-    if ("ongoing" in r) {
-      r["number"] = i;
-      ongoingRefs.push(i);
-      console.log(`Current referenum ${i} found, ending at block ${r["ongoing"]["end"]}`);
-      if (valVotes.includes(i)) {
-        console.log(`But validator ${stash_alias} has already voted for referendum ${i}.`);
+      if ("ongoing" in r) {
+        r["number"] = i;
+        ongoingRefs.push(i);
+        console.log(`Current referenum ${i} found, ending at block ${r["ongoing"]["end"]}`);
+        if (valVotes.includes(i)) {
+          console.log(`But validator ${stash_alias} has already voted for referendum ${i}.`);
+        } else {
+          referenda.push(r);
+        }
       } else {
-        referenda.push(r);
+        break;
       }
-    } else {
-      break;
     }
   }
 
-  if (referenda.length == 0 && valVotes.length > 0) {
-    console.log("All up-to-date with voting. Checking for expired referenda to remove...");
-    // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
-    let e = valVotes[0];
-    if (!ongoingRefs.includes(e)) {
-      console.log(`Now attempting to remove vote for referendum ${e}, since referendum has expired.`)
-      await api.tx.proxy.proxy(stash_account, "Governance", api.tx.democracy.removeVote(e)).signAndSend(voteBotKey, (async (result) => {
-        console.log('Transaction status:', result.status.type);
-        let status = result.status;
-        if (status.isInBlock) {
-          console.log('Included at block hash', result.status.asInBlock.toHex());
-          process.exit(0);
-        }
-      }))
-    } else {
-      console.log("No expired referenda, exiting.")
+  if (referenda.length == 0) {
+    if (valVotes.length > 0) {
+      console.log("All up-to-date with voting. Checking for expired referenda to remove...");
+      // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
+      let e = valVotes[0];
+      if (!ongoingRefs.includes(e)) {
+        console.log(`Now attempting to remove vote for referendum ${e}, since referendum has expired.`)
+        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.democracy.removeVote(e)).signAndSend(voteBotKey, (async (result) => {
+          console.log('Transaction status:', result.status.type);
+          let status = result.status;
+          if (status.isInBlock) {
+            console.log('Included at block hash', result.status.asInBlock.toHex());
+            process.exit(0);
+          }
+        }))
+      } else {
+        console.log("No expired referenda, exiting.")
+      }
     }
-
     process.exit(0);
   }
 
