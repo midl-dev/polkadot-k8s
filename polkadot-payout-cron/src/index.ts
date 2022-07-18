@@ -50,12 +50,22 @@
  * */
 
 // Import the API
-const { ApiPromise, WsProvider } = require('@polkadot/api');
-const { Keyring, encodeAddress } = require('@polkadot/keyring');
-const { WebClient, WebAPICallResult } = require('@slack/web-api');
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { Keyring, encodeAddress } from '@polkadot/keyring';
+import { WebClient } from '@slack/web-api';
+import '@polkadot/api-augment/kusama';
+import '@polkadot/types';
 
-async function main () {
-  const provider = new WsProvider(`ws://${process.env.NODE_ENDPOINT}:9944`);
+async function sendErrorToSlackAndExit(message: string) {
+  console.error(message);
+  if (process.env.SLACK_ALERT_TOKEN) {
+    const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN!);
+    await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! })
+  }
+  process.exit(1)
+}
+async function main() {
+  const provider = new WsProvider(`ws://${process.env.NODE_ENDPOINT!}:9944`);
   // Create our API
   const api = await ApiPromise.create({ provider });
 
@@ -63,23 +73,19 @@ async function main () {
   const keyring = new Keyring({ type: 'sr25519' });
 
   // Add the payout account to our keyring
-  const payoutKey = keyring.addFromUri(process.env.PAYOUT_ACCOUNT_MNEMONIC);
+  const payoutKey = keyring.addFromUri(process.env.PAYOUT_ACCOUNT_MNEMONIC!);
 
-  const [currentEra] = await Promise.all([
-    api.query.staking.currentEra()
-  ]);
+  const activeEra = (await api.query.staking.activeEra()).unwrapOrDefault()
 
 
-  const stash_account = process.env.STASH_ACCOUNT_ADDRESS;
-  const stash_alias = process.env.STASH_ACCOUNT_ALIAS; //optional
-  const payout_alias = process.env.PAYOUT_ACCOUNT_ALIAS; //optional
-  const num_past_eras = parseInt(process.env.NUM_PAST_ERAS);
+  const stash_account = process.env.STASH_ACCOUNT_ADDRESS!;
+  const stash_alias = process.env.STASH_ACCOUNT_ALIAS!; //optional
+  const payout_alias = process.env.PAYOUT_ACCOUNT_ALIAS!; //optional
+  const num_past_eras = parseInt(process.env.NUM_PAST_ERAS!);
   const chain = process.env.CHAIN;
   // https://wiki.polkadot.network/docs/build-ss58-registry
-  const chain_ss58_prefix = ( chain == "kusama") ? 2 : 0
+  const chain_ss58_prefix = (chain == "kusama") ? 2 : 0
   const payout_account = encodeAddress(payoutKey.address, chain_ss58_prefix);
-  var controller_address = await api.query.staking.bonded(stash_account);
-  var controller_ledger = await api.query.staking.ledger(controller_address.toString());
 
   console.log(`Chain                          ${chain}`);
   console.log(`Stash account address          ${stash_account}`);
@@ -88,70 +94,81 @@ async function main () {
   console.log(`Payout account alias           ${payout_alias}`);
   console.log(`Number of past eras to pay out ${num_past_eras}`);
   console.log(`Node RPC endpoint in use       ${process.env.NODE_ENDPOINT}`);
-  claimed_eras = controller_ledger.toHuman().claimedRewards.map(x => parseInt(x.replace(',','')));
+
+
+
+  console.log(`Active Era is ${activeEra}`)
+  let controller_address = await api.query.staking.bonded(stash_account);
+  let controller_ledger = (await api.query.staking.ledger(controller_address.toString())).unwrapOrDefault()
+
+  let claimed_eras = controller_ledger.claimedRewards.map(x => x.toNumber());
   console.log(`Payout for validator stash ${stash_alias} has been claimed for eras: ${claimed_eras}`);
 
-  for (i = 0; i < num_past_eras; i++) {
-    eraToClaim = currentEra - 1 - i;
-
+  for (let i = 0; i < num_past_eras; i++) {
+    let eraToClaim = activeEra.index.toNumber() - i - 1;
     if (claimed_eras.includes(eraToClaim)) {
       console.log(`Payout for validator stash ${stash_alias} for era ${eraToClaim} has already been issued`);
       continue;
     }
 
-    var exposure_for_era = await api.query.staking.erasStakers(eraToClaim, stash_account);
-    if (exposure_for_era.total == 0) {
+    const erasRewardsPoints = await api.query.staking.erasRewardPoints(eraToClaim)
+    const thisValRewards = erasRewardsPoints.individual.toHuman()[stash_account]
+
+    if (thisValRewards) {
+      console.log(`Rewards of ${thisValRewards} found for validator for ${eraToClaim}.`)
+    } else {
       console.log(`Stash ${stash_alias} was not in the active validator set for era ${eraToClaim}, no payout can be made`);
       continue;
     }
 
+
     if (i > 0) {
       var message = `Warning: Found and paid payouts more than one era in the past. Payout bot should run at least once per era. Please check your payout engine.`;
-      if(process.env.SLACK_ALERT_TOKEN) {
+      if (process.env.SLACK_ALERT_TOKEN) {
         const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN);
-        const res = await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL });
+        const res = await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! });
       }
       console.warn(message);
     }
 
     console.log(`Issuing payoutStakers extrinsic from address ${payout_alias} for validator stash ${stash_alias} for era ${eraToClaim}`);
-  
-    // Create, sign and send the payoutStakers extrinsic
+
     try {
-      var unsub = await api.tx.staking.payoutStakers(stash_account, eraToClaim).signAndSend(payoutKey, ({ events = [], status }) => {
-        console.log('Transaction status:', status.type);
-  
+      await api.tx.staking.payoutStakers(stash_account, eraToClaim).signAndSend(payoutKey, (async (result) => {
+        let status = result.status;
+        let events = result.events;
+        console.log('Transaction status:', result.status.type);
+
         if (status.isInBlock) {
-          console.log('Included at block hash', status.asInBlock.toHex());
-          console.log('Events:');
-  
-          events.forEach(({ event: { data, method, section }, phase }) => {
-            console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+          console.log('Included at block hash', result.status.asInBlock.toHex());
+
+          events.forEach((event: any) => {
+            console.log('\t', event.toString());
           });
         } else if (status.isFinalized) {
           console.log('Finalized block hash', status.asFinalized.toHex());
-        } else if (status.isError) {
-          var message = `Payout extrinsic was succesfully finalized on-chain but failed for validator ${stash_alias} (${stash_account}) with error ${status.asFinalized.toHex()}.`;
-          if(process.env.SLACK_ALERT_TOKEN) {
-            const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN);
-            const res = slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL });
+          if (result.dispatchError) {
+            let slackMessage = `Payout extrinsic was succesfully finalized on-chain but failed for validator ${stash_alias} (${stash_account}) with error ${status.asFinalized.toHex()}.`;
+            sendErrorToSlackAndExit(slackMessage)
+          } else {
+            console.log("extrinsic success in finalized block, exiting")
+            process.exit(0);
           }
-          console.error(message);
-          process.exit(1);
+        } else if (status.isInvalid || status.isDropped) {
+          let slackMessage = `Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
+          sendErrorToSlackAndExit(slackMessage);
+        } else if (status.isRetracted) {
+          // fail the job but do not alert. It is likely the transaction will go through at next try.
+          process.exit(1)
         }
-      });
+      }));
     }
-    catch(e) {
-      var message = `Payout extrinsic failed on-chain submission for validator ${stash_alias} from payout address ${payout_alias} with error ${e.message}.`;
-      if(process.env.SLACK_ALERT_TOKEN) {
-        const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN);
-        const res = (await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL }));
-      }
-      console.error(message);
-      console.log(e);
-      process.exit(1);
+    catch (e: any) {
+      let slackMessage = `Payout extrinsic failed on-chain submission for validator ${stash_alias} from payout address ${payout_alias} with error ${e.message}.`;
+      sendErrorToSlackAndExit(slackMessage);
     }
   }
+
   console.log("Exiting");
   process.exit(0);
 }

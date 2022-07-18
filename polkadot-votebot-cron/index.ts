@@ -19,8 +19,8 @@
 
 // Import the API
 import '@polkadot/api-augment/kusama';
-import { ApiPromise, WsProvider } from '@polkadot/api';
 import '@polkadot/types';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring, encodeAddress } from '@polkadot/keyring';
 import { WebClient } from '@slack/web-api';
 //import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
