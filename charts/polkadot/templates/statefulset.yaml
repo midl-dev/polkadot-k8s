@@ -95,7 +95,7 @@ spec:
       volumes:
       - name: polkadot-node-keys
         secret:
-          secretName: polkadot-val-secrets
+          secretName: polkadot-node-keys
   volumeClaimTemplates:
   - metadata:
       name: polkadot-node-pv-claim
