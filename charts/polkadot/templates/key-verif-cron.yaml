@@ -1,10 +1,11 @@
+{{- if .Values.session_key_verification.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: polkadot-key-verif-cron
   namespace: {{ .Release.Namespace }}
 spec:
-  schedule: {{ .Values.cron_schedule }}
+  schedule: {{ .Values.session_key_verification.cron_schedule }}
   concurrencyPolicy:  Forbid
   jobTemplate:
     spec:
@@ -39,3 +40,4 @@ spec:
                 cpu: 0
             imagePullPolicy: IfNotPresent
           restartPolicy: OnFailure
+{{- end }}

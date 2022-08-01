@@ -6,7 +6,6 @@
  *  * NODE_ENDPOINT : the polkadot/kusama node rpc (localhost)
  *  * STASH_ACCOUNT_ADDRESS: the address of the validator's stash
  *  * STASH_ACCOUNT_ALIAS: an alias for your validator
- *  * VOTE_REPO: the github repository where your vote choices are kept in yaml format, for example midl-dev/dotsama-votes
  *
  *
  *  To run continously, put the following script in a cronjob.
@@ -34,14 +33,12 @@ async function main() {
 
   const stash_account: string = process.env.STASH_ACCOUNT_ADDRESS!;
   const stash_alias = process.env.STASH_ACCOUNT_ALIAS; //optional
-  const chain = process.env.CHAIN;
   // https://wiki.polkadot.network/docs/build-ss58-registry
   const currentBlockNum = (await api.rpc.chain.getHeader()).number;
 
   console.log("Polkadot Session Key Verificator by MIDL.dev");
   console.log("Copyright 2022 MIDLDEV OU");
   console.log("***");
-  console.log(`Chain:                         ${chain}`);
   console.log(`Current block number:          ${currentBlockNum.toHuman()}`);
   console.log(`Stash account address:         ${stash_account}`);
   console.log(`Stash account alias:           ${stash_alias}`);
