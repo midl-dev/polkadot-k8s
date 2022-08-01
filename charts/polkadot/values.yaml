@@ -6,6 +6,7 @@ polkadot_k8s_images:
   polkadot_archive_downloader: polkadot-archive-downloader:dev
   polkadot_node_key_configurator: polkadot-node-key-configurator:dev
   polkadot_sidecar: polkadot-sidecar:dev
+  polkadot_key_verif: polkadot-key-verif:dev
 
 polkadot_archive_url: https://ksm-rocksdb.polkashots.io/snapshot
 
@@ -16,6 +17,9 @@ polkadot_validator_name: polkadot_k8s_pulumi
 number_of_out_peers: 10
 
 number_of_in_peers: 10
+
+slack_alert_token: "token to send session key mismatch alerts on slack"
+slack_alert_channel: "the slack channel where you want to receive the alert"
 
 chain: kusama
 
