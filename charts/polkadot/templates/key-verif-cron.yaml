@@ -1,0 +1,43 @@
+{{- if .Values.session_key_verification.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: polkadot-key-verif-cron
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.session_key_verification.cron_schedule }}
+  concurrencyPolicy:  Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: polkadot-key-verif-cron
+        spec:
+          nodeSelector:
+ {{ toYaml .Values.node_selector | indent 12 }}
+          containers:
+          - name: polkadot-key-verif-cron
+            image: {{ .Values.polkadot_k8s_images.polkadot_key_verif_cron }}
+            env:
+            - name: "SLACK_ALERT_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: polkadot-val-secrets
+                  key: slack-alert-token
+            - name: "STASH_ACCOUNT_ADDRESS"
+              value: "{{ .Values.session_key_verification.stash_account_address }}"
+            - name: "STASH_ACCOUNT_ALIAS"
+              value: "{{ .Values.session_key_verification.stash_account_alias }}"
+            - name: "SLACK_ALERT_CHANNEL"
+              value: "{{ .Values.session_key_verification.slack_alert_channel }}"
+            - name: "NODE_ENDPOINT"
+              value: "127.0.0.1"
+            - name: "CHAIN"
+              value: "{{ .Values.chain }}"
+            resources:
+              limits:
+                cpu: 0
+            imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure
+{{- end }}
