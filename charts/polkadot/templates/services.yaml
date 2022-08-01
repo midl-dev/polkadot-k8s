@@ -10,6 +10,8 @@ spec:
   ports:
   - port: 9933
     name: rpc
+  - port: 9944
+    name: wss
   - port: 9615
     name: metrics
   selector:
