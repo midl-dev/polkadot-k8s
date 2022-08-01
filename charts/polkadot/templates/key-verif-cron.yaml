@@ -22,14 +22,14 @@ spec:
             - name: "SLACK_ALERT_TOKEN"
               valueFrom:
                 secretKeyRef:
-                  name: polkadot-payout-secrets
+                  name: polkadot-val-secrets
                   key: slack-alert-token
             - name: "STASH_ACCOUNT_ADDRESS"
-              value: "{{ .Values.stash_account_address }}"
+              value: "{{ .Values.session_key_verification.stash_account_address }}"
             - name: "STASH_ACCOUNT_ALIAS"
-              value: "{{ .Values.stash_account_alias }}"
+              value: "{{ .Values.session_key_verification.stash_account_alias }}"
             - name: "SLACK_ALERT_CHANNEL"
-              value: "{{ .Values.slack_alert_channel }}"
+              value: "{{ .Values.session_key_verification.slack_alert_channel }}"
             - name: "NODE_ENDPOINT"
               value: "127.0.0.1"
             - name: "CHAIN"

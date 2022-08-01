@@ -18,8 +18,15 @@ number_of_out_peers: 10
 
 number_of_in_peers: 10
 
-slack_alert_token: "token to send session key mismatch alerts on slack"
-slack_alert_channel: "the slack channel where you want to receive the alert"
+# if enabled, will launch a cronjob that alerts you
+# when the session key for the validator is not present
+# in the local node.
+session_key_verification:
+  enabled: false
+  stash_account_address: "stash account address to verify"
+  stash_account_alias: "alias for the stash account"
+  slack_alert_token: "token to send session key mismatch alerts on slack"
+  slack_alert_channel: "the slack channel where you want to receive the alert"
 
 chain: kusama
 
