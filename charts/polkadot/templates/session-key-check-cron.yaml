@@ -1,24 +1,24 @@
-{{- if .Values.session_key_verification.enabled }}
+{{- if .Values.session_key_check.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: polkadot-key-verif-cron
+  name: polkadot-session-key-check
   namespace: {{ .Release.Namespace }}
 spec:
-  schedule: {{ .Values.session_key_verification.cron_schedule }}
+  schedule: {{ .Values.session_key_check.cron_schedule }}
   concurrencyPolicy:  Forbid
   jobTemplate:
     spec:
       template:
         metadata:
           labels:
-            app: polkadot-key-verif-cron
+            app: polkadot-session-key-check
         spec:
           nodeSelector:
  {{ toYaml .Values.node_selector | indent 12 }}
           containers:
-          - name: polkadot-key-verif-cron
-            image: {{ .Values.polkadot_k8s_images.polkadot_key_verif_cron }}
+          - name: polkadot-session-key-check
+            image: {{ .Values.polkadot_k8s_images.polkadot_session_key_check }}
             env:
             - name: "SLACK_ALERT_TOKEN"
               valueFrom:
@@ -26,11 +26,11 @@ spec:
                   name: polkadot-val-secrets
                   key: slack-alert-token
             - name: "STASH_ACCOUNT_ADDRESS"
-              value: "{{ .Values.session_key_verification.stash_account_address }}"
+              value: "{{ .Values.session_key_check.stash_account_address }}"
             - name: "STASH_ACCOUNT_ALIAS"
-              value: "{{ .Values.session_key_verification.stash_account_alias }}"
+              value: "{{ .Values.session_key_check.stash_account_alias }}"
             - name: "SLACK_ALERT_CHANNEL"
-              value: "{{ .Values.session_key_verification.slack_alert_channel }}"
+              value: "{{ .Values.session_key_check.slack_alert_channel }}"
             - name: "NODE_ENDPOINT"
               value: "127.0.0.1"
             - name: "CHAIN"

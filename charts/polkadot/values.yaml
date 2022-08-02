@@ -6,7 +6,7 @@ polkadot_k8s_images:
   polkadot_archive_downloader: polkadot-archive-downloader:dev
   polkadot_node_key_configurator: polkadot-node-key-configurator:dev
   polkadot_sidecar: polkadot-sidecar:dev
-  polkadot_key_verif: polkadot-key-verif:dev
+  polkadot_session_key_check: polkadot-session-key-check:dev
 
 polkadot_archive_url: https://ksm-rocksdb.polkashots.io/snapshot
 
@@ -21,7 +21,7 @@ number_of_in_peers: 10
 # if enabled, will launch a cronjob that alerts you
 # when the session key for the validator is not present
 # in the local node.
-session_key_verification:
+session_key_check:
   enabled: false
   stash_account_address: "stash account address to verify"
   stash_account_alias: "alias for the stash account"
