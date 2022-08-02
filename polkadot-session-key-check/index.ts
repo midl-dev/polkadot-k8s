@@ -47,7 +47,7 @@ async function main() {
     await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! })
   }
   console.log("Exiting");
-
+  process.exit(0);
 }
 
 main().then(console.log).catch(console.error);
