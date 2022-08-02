@@ -54,3 +54,10 @@ vol_size: 50
 # only set to true if you have the prometheus operator installed.
 # Otherwise, helm installation will fail
 deploy_service_monitor: false
+
+resources:
+  limits:
+    cpu: 0
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi

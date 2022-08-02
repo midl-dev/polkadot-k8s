@@ -42,8 +42,7 @@ spec:
         - configMapRef:
             name: polkadot-configmap
         resources:
-          limits:
-            cpu: 0
+{{ toYaml .Values.resources | indent 10 }}
         imagePullPolicy: IfNotPresent
         readinessProbe:
           periodSeconds: 30
