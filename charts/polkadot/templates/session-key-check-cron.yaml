@@ -32,7 +32,7 @@ spec:
             - name: "SLACK_ALERT_CHANNEL"
               value: "{{ .Values.session_key_check.slack_alert_channel }}"
             - name: "NODE_ENDPOINT"
-              value: "127.0.0.1"
+              value: "private-node"
             - name: "CHAIN"
               value: "{{ .Values.chain }}"
             resources:
