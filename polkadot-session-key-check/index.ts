@@ -17,14 +17,6 @@ import '@polkadot/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { WebClient } from '@slack/web-api';
 
-async function sendErrorToSlackAndExit(message: string) {
-  console.error(message);
-  if (process.env.SLACK_ALERT_TOKEN) {
-    const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN!);
-    await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! })
-  }
-  process.exit(1)
-}
 async function main() {
   const provider = new WsProvider(`ws://${process.env.NODE_ENDPOINT}:9944`);
   // Create our API
@@ -48,11 +40,13 @@ async function main() {
   console.log(`Node's next keys in hex: ${nextKeys.toHex()}`);
   let nodeHasKeys = await api.rpc.author.hasSessionKeys(nextKeys.toHex());
   console.log(`Local node has the session keys necessary to validate: ${nodeHasKeys}`);
-  if (!nodeHasKeys) {
-    await sendErrorToSlackAndExit("Node ${stash_alias} does not have the session keys advertised on-chain in local storage.");
-  } else {
-    process.exit(0);
+  if (nodeHasKeys.isFalse) {
+    let message = `Node ${stash_alias} does not have the session keys advertised on-chain in local storage. Expected session key: ${nextKeys.toHex().substring(0, 12)}...`;
+    console.error(message);
+    const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN!);
+    await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! })
   }
+  console.log("Exiting");
 
 }
 
