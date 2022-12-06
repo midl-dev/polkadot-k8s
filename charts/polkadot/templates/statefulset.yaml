@@ -55,7 +55,7 @@ spec:
         resources:
           limits:
             cpu: 0
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
       initContainers:
       - name: polkadot-node-key-configurator
         image: {{ .Values.polkadot_k8s_images.polkadot_node_key_configurator }}
@@ -67,7 +67,7 @@ spec:
         envFrom:
         - configMapRef:
             name: polkadot-configmap
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         resources:
           limits:
             cpu: 0
@@ -87,7 +87,7 @@ spec:
             configMapKeyRef:
               name: polkadot-configmap
               key: ARCHIVE_URL
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         resources:
           limits:
             cpu: 0
