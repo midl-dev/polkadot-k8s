@@ -20,7 +20,7 @@ else
     rm -rf /polkadot/.local/share/polkadot/chains/${chain_dir}-tmp/ || true
     mkdir -p /polkadot/.local/share/polkadot/chains/${chain_dir}-tmp/
     echo "Will download $ARCHIVE_URL"
-    curl --http1.1 -o - -L $ARCHIVE_URL | lz4 -c -d - | tar -x -C /polkadot/.local/share/polkadot/chains/${chain_dir}
+    curl --http1.1 -o - -L $ARCHIVE_URL | lz4 -c -d - | tar -x -C /polkadot/.local/share/polkadot/chains/${chain_dir}-tmp
     echo "Download successful, moving to final location"
     mv -v /polkadot/.local/share/polkadot/chains/${chain_dir}-tmp/ /polkadot/.local/share/polkadot/chains/${chain_dir}/
     chmod -R 777 /polkadot/.local/
