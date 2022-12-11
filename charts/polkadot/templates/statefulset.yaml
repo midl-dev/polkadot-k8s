@@ -51,10 +51,10 @@ spec:
             path: /is_synced
             port: 31764
         livenessProbe:
-          # kill container after 20 minutes unsynced
+          # kill container after 40 minutes unsynced
           # that's enough time to not be chilled on kusama
           periodSeconds: 30
-          failureThreshold: 120
+          failureThreshold: 240
           timeoutSeconds: 10
           httpGet:
             path: /is_synced
