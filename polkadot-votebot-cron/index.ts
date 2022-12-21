@@ -63,7 +63,7 @@ async function main() {
   const DEADLINE_WARNING_NUM_BLOCKS: BigInt = BigInt(15000);
 
   console.log("Polkadot Vote Bot by MIDL.dev");
-  console.log("Copyright 2022 MIDLDEV OU");
+  console.log("Copyright 2023 MIDLDEV OU");
   console.log("***");
   console.log(`Chain:                         ${chain}`);
   console.log(`Current block number:          ${currentBlockNum.toHuman()}`);
@@ -83,7 +83,7 @@ async function main() {
   let refCount = await api.query.democracy.referendumCount();
   var referenda: any = [];
   let ongoingRefs = [];
-  let i: number = refCount.toU8a()[0];
+  let i: number = refCount.toNumber();
   if (i) {
     while (true) {
       i = i - 1;
