@@ -76,10 +76,36 @@ async function main() {
   let rawValVotes = await api.query.democracy.votingOf(stash_account);
   let valVotes = JSON.parse(JSON.stringify(rawValVotes));
 
+  const referendacul = await api.query.referenda.referendumInfoFor(54);
+  console.log(`Referenda: ${JSON.stringify(referendacul.toHuman())}`);
 
-  valVotes = valVotes["direct"]["votes"].map((v: any) => v[0]);
-  console.log(`Validator ${stash_alias} already voted for referenda ${valVotes}.`);
 
+  fetch(`https://kusama.api.subscan.io/api/scan/democracy/votes`,
+    {
+      body: JSON.stringify({
+        page: currentPage,
+        referendum_index: referendumId,
+        row: 10
+      }),
+      headers: subscanApiHeaders,
+      method: 'POST'
+    }).then(async (res) => {
+      const votersData = await res.json();
+
+      if (votersData && votersData.data && votersData.data.list) {
+        if (!count) {
+          setCount(votersData.data.count);
+        }
+        setVotersList(votersData.data.list);
+      }
+
+      setLoadingStatus({
+        isLoading: false,
+        message: 'Loading Data'
+      });
+    }).catch((err) => {
+      console.error('Error in fetching vote data:', err);
+    });
   let refCount = await api.query.democracy.referendumCount();
   var referenda: any = [];
   let ongoingRefs = [];

@@ -1,5 +1,5 @@
 {{- if .Values.session_key_check.enabled }}
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: polkadot-session-key-check
