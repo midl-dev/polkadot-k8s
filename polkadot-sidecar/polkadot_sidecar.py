@@ -33,7 +33,7 @@ def sync_checker():
 
     PROBLEM_DELAY = 180
     if last_block_age > PROBLEM_DELAY:
-        err = f"last block is more than {PROBLEM_DELAY} seconds old"
+        err = f"last block is more than {PROBLEM_DELAY} seconds old", 500
         print(err)
         return err
     return "chain is synced"
