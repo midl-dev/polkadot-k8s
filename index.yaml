@@ -3,6 +3,16 @@ entries:
   polkadot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-03-27T02:19:04.05869845Z"
+    description: A Helm chart for Kubernetes
+    digest: 009355a53c965102cd6c8f97b01c0dc67479b64bf04cd4e89063c1c6db621449
+    name: polkadot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-v7.26.tgz
+    version: v7.26
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-03-15T00:13:24.131285578Z"
     description: A Helm chart for Kubernetes
     digest: 8f4020d4ec886bb870b28b9b4a0782be524d812a39142d9291a895fcaa1f93ee
@@ -364,6 +374,16 @@ entries:
   polkadot-payout:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-03-27T02:19:04.057676333Z"
+    description: A Helm chart for Kubernetes
+    digest: d0d7717383295cd2dd0941b2cdb3666c804d73c5322b90c504988bb0e57d7b0c
+    name: polkadot-payout
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-payout-v7.26.tgz
+    version: v7.26
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-03-15T00:13:24.130564114Z"
     description: A Helm chart for Kubernetes
     digest: b3780b851ae4fade72f0165f9ab3a964bf49851986d7f4bd7321579d10e354f9
@@ -675,6 +695,16 @@ entries:
   polkadot-votebot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-03-27T02:19:04.059047256Z"
+    description: A Helm chart for Kubernetes
+    digest: c0d28729b7a44598169b2affb514bc83ec0368fd9b7730633e93e2f5315229be
+    name: polkadot-votebot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v7.26.tgz
+    version: v7.26
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-03-15T00:13:24.132136254Z"
     description: A Helm chart for Kubernetes
     digest: e6c8085d14133980cf0ac32a1f637b0f981d8419f77542f1eb6a0bf87794f6e5
@@ -913,4 +943,4 @@ entries:
     urls:
     - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v7.0.tgz
     version: v7.0
-generated: "2023-03-15T00:13:24.129448314Z"
+generated: "2023-03-27T02:19:04.057028922Z"
