@@ -61,3 +61,8 @@ resources:
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+# liveness probe settings - the polkadot node restarts when not responsive
+livenessProbe:
+  periodSeconds: 30
+  failureThreshold: 40

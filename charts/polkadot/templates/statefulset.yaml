@@ -53,8 +53,8 @@ spec:
         livenessProbe:
           # kill container after 20 minutes unsynced
           # that's enough time to not be chilled on kusama
-          periodSeconds: 30
-          failureThreshold: 40
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           timeoutSeconds: 10
           httpGet:
             path: /is_synced
