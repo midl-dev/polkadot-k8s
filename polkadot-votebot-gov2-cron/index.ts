@@ -155,17 +155,11 @@ async function main() {
 
   let r = referenda[referenda.length - 1];
   i = r["number"];
-  // if (!(i in votes)) {
-  //   let blocksBeforeDeadline = BigInt(r["ongoing"]["end"]) - currentBlockNum.toBigInt();
-  //   let errorMsg = `Recommendation for vote ${i} has not yet been committed to ${url}. Referendum ${i} will end in ${blocksBeforeDeadline} blocks, please commit a recommendation.`;
-  //   if (blocksBeforeDeadline < DEADLINE_WARNING_NUM_BLOCKS) {
-  //     await sendErrorToSlackAndExit(errorMsg);
-  //   } else {
-  //     console.error(errorMsg);
-  //     console.log(`We will send an alert when we are less than ${DEADLINE_WARNING_NUM_BLOCKS} before the referendum end`);
-  //     process.exit(0);
-  //   }
-  // }
+  if (!(i in votes)) {
+    let errorMsg = `Recommendation for gov2 vote ${i} has not yet been committed to ${url}. Please commit a recommendation.`;
+    console.error(errorMsg);
+    process.exit(0);
+  }
   console.log(`Voting ${votes[i]["vote"]} for referendum ${i}. Reason:`);
   console.log(votes[i]["reason"]);
   let isAye: boolean = (votes[i]["vote"] == "aye");
