@@ -73,12 +73,12 @@ async function main() {
   console.log(`Voting proxy account alias:    ${vote_bot_alias}`);
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
-  let rawValVotes = await api.query.convictionVoting.votingFor.entries(stash_account_address)
-
   if (chain == "polkadot") {
     console.log("Polkadot has no gov2 yet")
     process.exit(0)
   }
+
+  let rawValVotes = await api.query.convictionVoting.votingFor.entries(stash_account_address)
 
   let valVotes = rawValVotes.map((v: any) => JSON.parse(JSON.stringify(v[1]))["casting"]["votes"].map((v: any) => v[0])).flat()
   console.log(`Validator ${stash_alias} already voted for referenda ${JSON.stringify(valVotes)}.`);
