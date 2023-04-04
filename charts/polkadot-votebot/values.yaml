@@ -1,5 +1,6 @@
 polkadot_k8s_images:
   polkadot_votebot_cron: polkadot-votebot-cron:dev
+  polkadot_votebot_gov2_cron: polkadot-votebot-gov2-cron:dev
 # to deploy in a specific node pool, put label here
 node_selector: {}
 stash_account_address: "your validator stash account on-chain address"
