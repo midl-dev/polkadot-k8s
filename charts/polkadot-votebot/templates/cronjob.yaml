@@ -47,6 +47,7 @@ spec:
               limits:
                 cpu: 0
             imagePullPolicy: IfNotPresent
+          containers:
           - name: polkadot-votebot-cron
             image: {{ .Values.polkadot_k8s_images.polkadot_votebot_cron }}
             env:
