@@ -75,6 +75,11 @@ async function main() {
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
   let rawValVotes = await api.query.convictionVoting.votingFor.entries(stash_account_address)
 
+  if (chain == "polkadot") {
+    console.log("Polkadot has no gov2 yet")
+    process.exit(0)
+  }
+
   let valVotes = rawValVotes.map((v: any) => JSON.parse(JSON.stringify(v[1]))["casting"]["votes"].map((v: any) => v[0])).flat()
   console.log(`Validator ${stash_alias} already voted for referenda ${JSON.stringify(valVotes)}.`);
 
@@ -190,14 +195,14 @@ async function main() {
       } else if (status.isFinalized) {
         console.log('Finalized block hash', status.asFinalized.toHex());
         if (result.dispatchError) {
-          let slackMessage = `Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
+          let slackMessage = `Gov2 Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
           sendErrorToSlackAndExit(slackMessage)
         } else {
           console.log("extrinsic success in finalized block, exiting")
           process.exit(0);
         }
       } else if (status.isInvalid || status.isDropped) {
-        let slackMessage = `Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
+        let slackMessage = `Gov2 Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
         sendErrorToSlackAndExit(slackMessage);
       } else if (status.isRetracted) {
         // fail the job but do not alert. It is likely the transaction will go through at next try.
@@ -207,7 +212,7 @@ async function main() {
   }
   catch (e: any) {
     const error_message: string = e.message;
-    let slackMessage = `Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${error_message}.`;
+    let slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${error_message}.`;
     sendErrorToSlackAndExit(slackMessage);
   }
 }
