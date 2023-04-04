@@ -3,10 +3,10 @@ images:
   polkadot_node: "paritytech/polkadot:latest"
 # Images that are part of the polkadot-k8s repo go here with 'latest' tag
 polkadot_k8s_images:
-  polkadot_archive_downloader: polkadot-archive-downloader:dev
-  polkadot_node_key_configurator: polkadot-node-key-configurator:dev
-  polkadot_sidecar: polkadot-sidecar:dev
-  polkadot_session_key_check: polkadot-session-key-check:dev
+  polkadot_archive_downloader: ghcr.io/midl-dev/polkadot-archive-downloader:master
+  polkadot_node_key_configurator: ghcr.io/midl-dev/polkadot-node-key-configurator:master
+  polkadot_sidecar: ghcr.io/midl-dev/polkadot-sidecar:master
+  polkadot_session_key_check: ghcr.io/midl-dev/polkadot-session-key-check:master
 
 polkadot_archive_url: https://ksm-rocksdb.polkashots.io/snapshot
 
