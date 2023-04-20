@@ -45,7 +45,7 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --rpc-methods=Unsafe \
          --rpc-cors=all \
          --no-hardware-benchmarks \
-         --sync warp \
+         --sync=warp \
          $out_peers_param \
          $in_peers_param \
          $node_key_param \
