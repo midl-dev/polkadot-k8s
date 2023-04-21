@@ -8,7 +8,7 @@ polkadot_k8s_images:
   polkadot_sidecar: ghcr.io/midl-dev/polkadot-sidecar:master
   polkadot_session_key_check: ghcr.io/midl-dev/polkadot-session-key-check:master
 
-polkadot_archive_url: https://ksm-rocksdb.polkashots.io/snapshot
+#polkadot_archive_url:
 
 polkadot_telemetry_url: null
 
