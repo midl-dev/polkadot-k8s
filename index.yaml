@@ -3,9 +3,9 @@ entries:
   polkadot:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-05-18T13:53:40.867211296Z"
+    created: "2023-05-18T17:15:08.90730839Z"
     description: A Helm chart for Kubernetes
-    digest: ea6aa52ece6f2ffa6b781a2f74b58ff14e213a78e81ef954a8c0ac1cd88a133d
+    digest: 42212f6877c2da372f8b7a58cb9d404128c7be2780f3f0c23960550ff9fce993
     name: polkadot
     type: application
     urls:
@@ -444,9 +444,9 @@ entries:
   polkadot-payout:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-05-18T13:53:40.866725095Z"
+    created: "2023-05-18T17:15:08.906701745Z"
     description: A Helm chart for Kubernetes
-    digest: 74dfd80569239fa809f05a6ea45b546b0bd3bcac14044997f5c0906ea8b70dc1
+    digest: 5addb5eefa62d5d772b852faf7986ead4dbbb584f12d657e811fe61a112f93a4
     name: polkadot-payout
     type: application
     urls:
@@ -835,9 +835,9 @@ entries:
   polkadot-votebot:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-05-18T13:53:40.867524697Z"
+    created: "2023-05-18T17:15:08.907636114Z"
     description: A Helm chart for Kubernetes
-    digest: 45ae44993c32838abd1ef816b2171f088dc0ea571d8f838bb991b00ec70953bf
+    digest: 2fdf90b9fada0b74ce49166ebdad2630be2aafbead7e519f5c0b21d6219ee61a
     name: polkadot-votebot
     type: application
     urls:
@@ -1153,4 +1153,4 @@ entries:
     urls:
     - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v7.0.tgz
     version: v7.0
-generated: "2023-05-18T13:53:40.866223993Z"
+generated: "2023-05-18T17:15:08.905528159Z"
