@@ -1,4 +1,4 @@
-FROM parity/subkey:2.0.0
+FROM parity/subkey:2.0.2
 USER root
 # install tools and dependencies
 RUN apt-get update --allow-insecure-repositories && \
