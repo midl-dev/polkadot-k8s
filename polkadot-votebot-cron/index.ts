@@ -73,7 +73,7 @@ async function main() {
   console.log(`Voting proxy account alias:    ${vote_bot_alias}`);
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
-  console.log(`${api.query}`)
+  console.log(`${api}`)
   let rawValVotes = await api.query.democracy.votingOf(stash_account);
   let valVotes = JSON.parse(JSON.stringify(rawValVotes));
 
