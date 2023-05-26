@@ -19,7 +19,7 @@
 
 // Import the API
 import '@polkadot/api-augment';
-//import '@polkadot/api-augment/kusama';
+import '@polkadot/api-augment/kusama';
 import '@polkadot/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring, encodeAddress } from '@polkadot/keyring';
