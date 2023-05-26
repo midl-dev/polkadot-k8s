@@ -27,6 +27,7 @@ import { WebClient } from '@slack/web-api';
 const yaml = require('js-yaml');
 const fs = require('fs');
 const request = require('request');
+const util = require('util');
 
 async function sendErrorToSlackAndExit(message: string) {
   console.error(message);
@@ -73,7 +74,7 @@ async function main() {
   console.log(`Voting proxy account alias:    ${vote_bot_alias}`);
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
-  console.log(`${api}`)
+  console.log(`${util.inspect(api.query, {depth: null})}`);
   let rawValVotes = await api.query.democracy.votingOf(stash_account);
   let valVotes = JSON.parse(JSON.stringify(rawValVotes));
 
