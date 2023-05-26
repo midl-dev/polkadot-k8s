@@ -19,7 +19,6 @@
 
 // Import the API
 import '@polkadot/api-augment';
-//import '@polkadot/api-augment/kusama';
 import '@polkadot/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring, encodeAddress } from '@polkadot/keyring';
@@ -74,6 +73,7 @@ async function main() {
   console.log(`Voting proxy account alias:    ${vote_bot_alias}`);
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
+  console.log(`${api.query.democracy}`)
   let rawValVotes = await api.query.democracy.votingOf(stash_account);
   let valVotes = JSON.parse(JSON.stringify(rawValVotes));
 
