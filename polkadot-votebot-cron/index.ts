@@ -18,7 +18,8 @@
  * */
 
 // Import the API
-import '@polkadot/api-augment/kusama';
+import '@polkadot/api-augment/';
+//import '@polkadot/api-augment/kusama';
 import '@polkadot/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring, encodeAddress } from '@polkadot/keyring';
@@ -60,7 +61,7 @@ async function main() {
 
   // will send an alert when the referendum is this close to finishing, and
   // recommendation still hasn't been committed to the repo.
-  const DEADLINE_WARNING_NUM_BLOCKS: BigInt = BigInt(15000);
+  const DEADLINE_WARNING_NUM_BLOCKS: bigint = BigInt(15000);
 
   console.log("Polkadot Vote Bot by MIDL.dev");
   console.log("Copyright 2023 MIDLDEV OU");
