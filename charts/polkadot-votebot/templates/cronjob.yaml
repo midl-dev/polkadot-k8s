@@ -50,6 +50,9 @@ spec:
           containers:
           - name: polkadot-votebot-cron
             image: {{ .Values.polkadot_k8s_images.polkadot_votebot_cron }}
+            {{ if .Values.skip_gov1 }}
+            command: ["/bin/sh", "-ec", "echo 'gov1 has been deactivated, skipping'"]
+            {{ end }}
             env:
             - name: PROXY_ACCOUNT_MNEMONIC
               valueFrom:

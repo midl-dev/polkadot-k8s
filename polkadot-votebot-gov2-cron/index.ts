@@ -162,7 +162,7 @@ async function main() {
   }
   console.log(`Voting ${votes[i]["vote"]} for referendum ${i}. Reason:`);
   console.log(votes[i]["reason"]);
-  let isAye: boolean = (votes[i]["vote"] == "aye");
+  let isAye: boolean = (votes[i]["vote"] in ["aye", "yay"]);
 
   let vote = {
     Standard: {
