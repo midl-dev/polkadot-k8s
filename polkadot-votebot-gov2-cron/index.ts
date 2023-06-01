@@ -120,8 +120,8 @@ async function main() {
       // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
       let e = valVotes[0];
       if (!ongoingRefs.includes(e)) {
-        console.log(`Now attempting to remove vote for referendum ${e}, since referendum has expired.`)
-        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.democracy.removeVote(e)).signAndSend(voteBotKey, (async (result) => {
+        console.log(`Now attempting to remove vote for referendum ${e}, since referendum has expired. Exit immediately after sending extrinsic without catching any failures.`)
+        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.removeVote(0, e)).signAndSend(voteBotKey, (async (result) => {
           console.log('Transaction status:', result.status.type);
           let status = result.status;
           if (status.isInBlock) {
@@ -133,6 +133,7 @@ async function main() {
         console.log("No expired referenda, exiting.")
       }
     }
+
     process.exit(0);
   }
 
