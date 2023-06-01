@@ -18,7 +18,7 @@
  * */
 
 // Import the API
-import '@polkadot/api-augment/kusama';
+import '@polkadot/api-augment';
 import '@polkadot/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring, encodeAddress } from '@polkadot/keyring';
@@ -27,6 +27,7 @@ import { WebClient } from '@slack/web-api';
 const yaml = require('js-yaml');
 const fs = require('fs');
 const request = require('request');
+const util = require('util');
 
 async function sendErrorToSlackAndExit(message: string) {
   console.error(message);
@@ -60,7 +61,7 @@ async function main() {
 
   // will send an alert when the referendum is this close to finishing, and
   // recommendation still hasn't been committed to the repo.
-  const DEADLINE_WARNING_NUM_BLOCKS: BigInt = BigInt(15000);
+  const DEADLINE_WARNING_NUM_BLOCKS: bigint = BigInt(15000);
 
   console.log("Polkadot Vote Bot by MIDL.dev");
   console.log("Copyright 2023 MIDLDEV OU");
@@ -73,6 +74,7 @@ async function main() {
   console.log(`Voting proxy account alias:    ${vote_bot_alias}`);
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
+  console.log(`${util.inspect(api.query.democracy, {depth: null})}`);
   let rawValVotes = await api.query.democracy.votingOf(stash_account);
   let valVotes = JSON.parse(JSON.stringify(rawValVotes));
 
