@@ -121,6 +121,10 @@ async function main() {
       let e = valVotes[0];
       if (!ongoingRefs.includes(e)) {
         console.log(`Now attempting to remove vote for referendum ${e}, since referendum has expired.`)
+        if (api.tx.democracy == undefined) {
+            console.log('No democracy property could be found, exiting');
+            process.exit(0);
+        }
         await api.tx.proxy.proxy(stash_account, "Governance", api.tx.democracy.removeVote(e)).signAndSend(voteBotKey, (async (result) => {
           console.log('Transaction status:', result.status.type);
           let status = result.status;
