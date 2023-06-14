@@ -7,17 +7,17 @@ application = Flask(__name__)
 @application.route('/is_synced')
 def sync_checker():
     try:
-        system_health = requests.post('http://127.0.0.1:9933', json={"id":1, "jsonrpc":"2.0", "method": "system_health", "params":[]}).json()["result"]
+        system_health = requests.post('http://127.0.0.1:9944', json={"id":1, "jsonrpc":"2.0", "method": "system_health", "params":[]}).json()["result"]
 
         if system_health["isSyncing"]:
             err = "Still syncing", 500
             print(err)
             return err
 
-        current_block_height = requests.post('http://127.0.0.1:9933', json={"id":1, "jsonrpc":"2.0", "method": "system_syncState", "params":[]}).json()["result"]["currentBlock"]
+        current_block_height = requests.post('http://127.0.0.1:9944', json={"id":1, "jsonrpc":"2.0", "method": "system_syncState", "params":[]}).json()["result"]["currentBlock"]
 
-        current_block_hash = requests.post('http://127.0.0.1:9933', json={"id":1, "jsonrpc":"2.0", "method": "chain_getBlockHash", "params":[current_block_height]}).json()["result"]
-        current_block = requests.post('http://127.0.0.1:9933', json={"id":1, "jsonrpc":"2.0", "method": "chain_getBlock", "params":[current_block_hash]}).json()["result"]["block"]
+        current_block_hash = requests.post('http://127.0.0.1:9944', json={"id":1, "jsonrpc":"2.0", "method": "chain_getBlockHash", "params":[current_block_height]}).json()["result"]
+        current_block = requests.post('http://127.0.0.1:9944', json={"id":1, "jsonrpc":"2.0", "method": "chain_getBlock", "params":[current_block_hash]}).json()["result"]["block"]
     except requests.exceptions.RequestException as e:
         err = "Could not connect to node, %s" % repr(e), 500
         print(err)

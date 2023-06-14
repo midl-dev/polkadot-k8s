@@ -29,7 +29,7 @@ spec:
           - |
 {{ tpl (.Files.Get "scripts/polkadot-node.sh") . | indent 12 }}
         ports:
-        - containerPort: 9933
+        - containerPort: 9944
           name: dot-rpc-port
         - containerPort: 9615
           name: metrics
