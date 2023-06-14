@@ -40,7 +40,6 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --pruning=1000 \
          --prometheus-external \
          --execution native \
-         --unsafe-ws-external \
          --unsafe-rpc-external \
          --rpc-methods=Unsafe \
          --rpc-cors=all \
