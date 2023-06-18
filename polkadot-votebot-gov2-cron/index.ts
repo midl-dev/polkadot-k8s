@@ -73,10 +73,6 @@ async function main() {
   console.log(`Voting proxy account alias:    ${vote_bot_alias}`);
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
-  if (chain == "polkadot") {
-    console.log("Polkadot has no gov2 yet")
-    process.exit(0)
-  }
 
   let rawValVotes = await api.query.convictionVoting.votingFor.entries(stash_account_address)
 
