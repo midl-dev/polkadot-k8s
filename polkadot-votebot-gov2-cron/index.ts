@@ -87,6 +87,9 @@ async function main() {
   if (i) {
     while (true) {
       i = i - 1;
+      if (i == 0) {
+        break;
+      }
       var rawR = await api.query.referenda.referendumInfoFor(i);
       let r = JSON.parse(JSON.stringify(rawR));
 
