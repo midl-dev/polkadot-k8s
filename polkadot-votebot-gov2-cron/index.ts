@@ -162,7 +162,7 @@ async function main() {
   }
   console.log(`Voting ${votes[i]["vote"]} for referendum ${i}. Reason:`);
   console.log(votes[i]["reason"]);
-  let isAye: boolean = (votes[i]["vote"] in ["aye", "yay"]);
+  let isAye: boolean = (votes[i]["vote"] == "aye" || votes[i]["vote"] == "yay");
 
   let vote = {
     Standard: {
@@ -173,6 +173,7 @@ async function main() {
       balance: voteBalance,
     }
   };
+  console.log(`IsAye ${isAye}`);
 
   try {
     await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.vote(i, vote)).signAndSend(voteBotKey, (async (result) => {
