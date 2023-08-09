@@ -50,6 +50,10 @@ node_selector: {}
 # Instead, you must resize the pvc directly.
 vol_size: 50
 
+# storage class name
+# to specify the storage class for polkadot storage backend volume
+# storageClass: my-storage-class
+
 # deploy service monitor?
 # only set to true if you have the prometheus operator installed.
 # Otherwise, helm installation will fail

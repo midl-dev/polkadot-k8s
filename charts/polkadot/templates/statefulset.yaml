@@ -117,6 +117,9 @@ spec:
       name: polkadot-node-pv-claim
     spec:
       accessModes: [ "ReadWriteOnce" ]
+{{- if hasKey . "storage_class" }}
+      storageClassName: {{ .Values.storage_class }}
+{{- end }}
       resources:
         requests:
           storage: {{ .Values.vol_size }}Gi

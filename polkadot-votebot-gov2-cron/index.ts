@@ -113,6 +113,9 @@ async function main() {
     }
   }
 
+  console.log("NOCHEM done")
+  process.exit(0);
+
   if (referenda.length == 0) {
     if (valVotes.length > 0) {
       console.log("All up-to-date with voting. Checking for expired referenda to remove...");
