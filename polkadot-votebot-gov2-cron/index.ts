@@ -74,10 +74,21 @@ async function main() {
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
 
-  let rawValVotes = await api.query.convictionVoting.votingFor.entries(stash_account_address)
 
-  let valVotes = rawValVotes.map((v: any) => JSON.parse(JSON.stringify(v[1]))["casting"]["votes"].map((v: any) => v[0])).flat()
-  console.log(`Validator ${stash_alias} already voted for referenda ${JSON.stringify(valVotes)}.`);
+  let valVotes: number[] = [];
+
+  const govTracks = api.consts.referenda.tracks;
+  let classOfValVotes: { [key: number]: any } = {}
+  for (const govTrackEntry of govTracks) {
+    let rawValVotes: number[] = await api.query.convictionVoting.votingFor(stash_account_address, govTrackEntry[0]).then(q => JSON.parse(JSON.stringify(q))["casting"]["votes"].map((v: any) => v[0]))
+    console.log(`Existing votes for track ${govTrackEntry[0]} (${govTrackEntry[1]["name"]}): ${rawValVotes}`)
+    rawValVotes.forEach((v: number) => {
+      classOfValVotes[v] = govTrackEntry[0].toNumber()
+      valVotes.push(v)
+    })
+  }
+  // TODO: grab the duration per gov track, the estimated time before finishing for every referendum,
+  // send a slack alert when a referendum is set to expire
 
   let refCount = await api.query.referenda.referendumCount();
   var referenda: any = [];
@@ -113,17 +124,16 @@ async function main() {
     }
   }
 
-  console.log("NOCHEM done")
-  process.exit(0);
-
   if (referenda.length == 0) {
     if (valVotes.length > 0) {
       console.log("All up-to-date with voting. Checking for expired referenda to remove...");
+      console.log(`ValVotes: ${valVotes} `)
+      console.log(`ongoingRefs: ${ongoingRefs} `)
       // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
-      let e = valVotes[0];
+      let e = valVotes.sort()[0];
       if (!ongoingRefs.includes(e)) {
-        console.log(`Now attempting to remove vote for referendum ${e}, since referendum has expired. Exit immediately after sending extrinsic without catching any failures.`)
-        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.removeVote(0, e)).signAndSend(voteBotKey, (async (result) => {
+        console.log(`Now attempting to remove vote for referendum ${e} of class ${classOfValVotes[e]}, since referendum has expired.Exit immediately after sending extrinsic without catching any failures.`)
+        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.removeVote(classOfValVotes[e], e)).signAndSend(voteBotKey, (async (result) => {
           console.log('Transaction status:', result.status.type);
           let status = result.status;
           if (status.isInBlock) {
@@ -134,9 +144,9 @@ async function main() {
       } else {
         console.log("No expired referenda, exiting.")
       }
+    } else {
+      process.exit(0);
     }
-
-    process.exit(0);
   }
 
   // Load votes from external file
@@ -214,5 +224,4 @@ async function main() {
     sendErrorToSlackAndExit(slackMessage);
   }
 }
-
 main().then(console.log).catch(console.error);
