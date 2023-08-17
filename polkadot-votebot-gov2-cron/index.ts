@@ -144,9 +144,8 @@ async function main() {
       } else {
         console.log("No expired referenda, exiting.")
       }
-    } else {
-      process.exit(0);
     }
+    process.exit(0);
   }
 
   // Load votes from external file
