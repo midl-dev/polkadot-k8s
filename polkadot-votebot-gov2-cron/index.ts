@@ -107,10 +107,10 @@ async function main() {
       if ("ongoing" in r) {
         r["number"] = i;
         ongoingRefs.push(i);
-        console.log(`Current referenum ${i} found.`);
         if (valVotes.includes(i)) {
-          console.log(`But validator ${stash_alias} has already voted for referendum ${i}.`);
+          console.log(`Validator ${stash_alias} has already voted for current referendum ${i}.`);
         } else {
+          console.log(`Validator ${stash_alias} must vote for current referendum ${i}.`);
           referenda.push(r);
         }
         trigger = 0;
@@ -124,29 +124,6 @@ async function main() {
     }
   }
 
-  if (referenda.length == 0) {
-    if (valVotes.length > 0) {
-      console.log("All up-to-date with voting. Checking for expired referenda to remove...");
-      console.log(`ValVotes: ${valVotes} `)
-      console.log(`ongoingRefs: ${ongoingRefs} `)
-      // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
-      let e = valVotes.sort()[0];
-      if (!ongoingRefs.includes(e)) {
-        console.log(`Now attempting to remove vote for referendum ${e} of class ${classOfValVotes[e]}, since referendum has expired.Exit immediately after sending extrinsic without catching any failures.`)
-        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.removeVote(classOfValVotes[e], e)).signAndSend(voteBotKey, (async (result) => {
-          console.log('Transaction status:', result.status.type);
-          let status = result.status;
-          if (status.isInBlock) {
-            console.log('Included at block hash', result.status.asInBlock.toHex());
-            process.exit(0);
-          }
-        }))
-      } else {
-        console.log("No expired referenda, exiting.")
-      }
-    }
-    process.exit(0);
-  }
 
   // Load votes from external file
   const url = `https://raw.githubusercontent.com/${process.env.VOTE_REPO}/main/${chain}-gov2.yaml`;
@@ -165,62 +142,99 @@ async function main() {
   }
   const votes = yaml.load(await getVotes(url));
 
-  let r = referenda[referenda.length - 1];
-  i = r["number"];
-  if (!(i in votes)) {
-    let errorMsg = `Recommendation for gov2 vote ${i} has not yet been committed to ${url}. Please commit a recommendation.`;
-    console.error(errorMsg);
-    process.exit(0);
-  }
-  console.log(`Voting ${votes[i]["vote"]} for referendum ${i}. Reason:`);
-  console.log(votes[i]["reason"]);
-  let isAye: boolean = (votes[i]["vote"] == "aye" || votes[i]["vote"] == "yay");
+  let attemptDeletion: boolean = false;
+  if (referenda.length == 0) {
+    console.log("All up-to-date with voting.")
+    attemptDeletion = true;
+  } else {
+    let r = referenda[referenda.length - 1];
+    if (!(r["number"] in votes)) {
+      i = r["number"];
+      let errorMsg = `Recommendation for gov2 vote ${i} has not yet been committed to ${url}. Please commit a recommendation.`;
+      console.error(errorMsg);
+      attemptDeletion = true;
+    } else {
+      console.log(`Voting ${votes[i]["vote"]} for referendum ${i}. Reason:`);
+      console.log(votes[i]["reason"]);
+      let isAye: boolean = (votes[i]["vote"] == "aye" || votes[i]["vote"] == "yay");
 
-  let vote = {
-    Standard: {
-      vote: {
-        aye: isAye,
-        conviction: 'None',
-      },
-      balance: voteBalance,
-    }
-  };
-  console.log(`IsAye ${isAye}`);
-
-  try {
-    await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.vote(i, vote)).signAndSend(voteBotKey, (async (result) => {
-      let status = result.status;
-      let events = result.events;
-      console.log('Transaction status:', result.status.type);
-
-      if (status.isInBlock) {
-        console.log('Included at block hash', result.status.asInBlock.toHex());
-
-        events.forEach((event: any) => {
-          console.log('\t', event.toString());
-        });
-      } else if (status.isFinalized) {
-        console.log('Finalized block hash', status.asFinalized.toHex());
-        if (result.dispatchError) {
-          let slackMessage = `Gov2 Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
-          sendErrorToSlackAndExit(slackMessage)
-        } else {
-          console.log("extrinsic success in finalized block, exiting")
-          process.exit(0);
+      let vote = {
+        Standard: {
+          vote: {
+            aye: isAye,
+            conviction: 'None',
+          },
+          balance: voteBalance,
         }
-      } else if (status.isInvalid || status.isDropped) {
-        let slackMessage = `Gov2 Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
-        sendErrorToSlackAndExit(slackMessage);
-      } else if (status.isRetracted) {
-        // fail the job but do not alert. It is likely the transaction will go through at next try.
-        process.exit(1)
+      };
+      console.log(`IsAye ${isAye}`);
+
+      try {
+        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.vote(i, vote)).signAndSend(voteBotKey, (async (result) => {
+          let status = result.status;
+          let events = result.events;
+          console.log('Transaction status:', result.status.type);
+
+          if (status.isInBlock) {
+            console.log('Included at block hash', result.status.asInBlock.toHex());
+
+            events.forEach((event: any) => {
+              console.log('\t', event.toString());
+            });
+          } else if (status.isFinalized) {
+            console.log('Finalized block hash', status.asFinalized.toHex());
+            if (result.dispatchError) {
+              let slackMessage = `Gov2 Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
+              sendErrorToSlackAndExit(slackMessage)
+            } else {
+              console.log("extrinsic success in finalized block, exiting")
+              process.exit(0);
+            }
+          } else if (status.isInvalid || status.isDropped) {
+            let slackMessage = `Gov2 Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
+            sendErrorToSlackAndExit(slackMessage);
+          } else if (status.isRetracted) {
+            // fail the job but do not alert. It is likely the transaction will go through at next try.
+            process.exit(1)
+          }
+        }));
       }
-    }));
+      catch (e: any) {
+        const error_message: string = e.message;
+        let slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${error_message}.`;
+        sendErrorToSlackAndExit(slackMessage);
+      }
+    }
   }
-  catch (e: any) {
-    const error_message: string = e.message;
-    let slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${error_message}.`;
-    sendErrorToSlackAndExit(slackMessage);
+
+  if (attemptDeletion) {
+    if (valVotes.length > 0) {
+      console.log("Checking for expired referenda to remove...");
+      console.log(`ValVotes: ${valVotes} `)
+      console.log(`ongoingRefs: ${ongoingRefs} `)
+      let oldVote: number | undefined;
+      // Lazily removing one old vote (starting with oldest), so democracy bond can be unlocked easily if needed.
+      valVotes.forEach(e => {
+        if (!ongoingRefs.includes(e)) {
+          oldVote = e;
+        }
+      })
+      if (oldVote) {
+
+        console.log(`Now attempting to remove vote for referendum ${oldVote} of class ${classOfValVotes[oldVote!]}, since referendum has expired. Exit immediately after sending extrinsic without catching any failures.`)
+        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.removeVote(classOfValVotes[oldVote!], oldVote!)).signAndSend(voteBotKey, (async (result) => {
+          console.log('Transaction status:', result.status.type);
+          let status = result.status;
+          if (status.isInBlock) {
+            console.log('Included at block hash', result.status.asInBlock.toHex());
+            process.exit(0);
+          }
+        }))
+      } else {
+        console.log("No expired referenda, exiting.")
+        process.exit(0);
+      }
+    }
   }
 }
 main().then(console.log).catch(console.error);
