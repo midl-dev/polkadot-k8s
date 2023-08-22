@@ -149,11 +149,11 @@ async function main() {
   } else {
     let r = referenda[referenda.length - 1];
     if (!(r["number"] in votes)) {
-      i = r["number"];
-      let errorMsg = `Recommendation for gov2 vote ${i} has not yet been committed to ${url}. Please commit a recommendation.`;
+      let errorMsg = `Recommendation for gov2 vote ${r["number"]} has not yet been committed to ${url}. Please commit a recommendation.`;
       console.error(errorMsg);
       attemptDeletion = true;
     } else {
+      i = r["number"];
       console.log(`Voting ${votes[i]["vote"]} for referendum ${i}. Reason:`);
       console.log(votes[i]["reason"]);
       let isAye: boolean = (votes[i]["vote"] == "aye" || votes[i]["vote"] == "yay");
