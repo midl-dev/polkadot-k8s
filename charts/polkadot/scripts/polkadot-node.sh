@@ -37,7 +37,8 @@ fi
 
 # sleep 1000
 eval /usr/bin/polkadot --validator --wasm-execution Compiled \
-         --pruning=1000 \
+         --state-pruning=256 \
+         --blocks-pruning=256 \
          --prometheus-external \
          --execution native \
          --unsafe-rpc-external \
