@@ -37,6 +37,7 @@ fi
 
 # sleep 1000
 eval /usr/bin/polkadot --validator --wasm-execution Compiled \
+         --base-path=/polkadot/.local/share/polkadot/ \
          --state-pruning=256 \
          --blocks-pruning=256 \
          --prometheus-external \
