@@ -41,12 +41,12 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
          --state-pruning=256 \
          --blocks-pruning=256 \
          --prometheus-external \
-         --execution native \
          --unsafe-rpc-external \
          --rpc-methods=Unsafe \
          --rpc-cors=all \
          --no-hardware-benchmarks \
          --sync=warp \
+         --no-beefy \
          $out_peers_param \
          $in_peers_param \
          $node_key_param \
