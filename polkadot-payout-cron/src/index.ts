@@ -157,7 +157,7 @@ async function main() {
             process.exit(0);
           }
         } else if (status.isInvalid || status.isDropped) {
-          let slackMessage = `Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
+          let slackMessage = `Payout extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
           sendErrorToSlackAndExit(slackMessage);
         } else if (status.isRetracted) {
           // fail the job but do not alert. It is likely the transaction will go through at next try.
