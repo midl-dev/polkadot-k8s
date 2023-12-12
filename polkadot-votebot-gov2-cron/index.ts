@@ -187,7 +187,7 @@ async function main() {
           } else if (status.isFinalized) {
             console.log('Finalized block hash', status.asFinalized.toHex());
             if (result.dispatchError) {
-              let slackMessage = `Gov2 Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address \`${voteBot_account}\` with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
+              let slackMessage = `Gov2 Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address ${vote_bot_alias}(\`${voteBot_account}\`) with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
               sendErrorToSlackAndExit(slackMessage)
             } else {
               console.log("extrinsic success in finalized block, exiting")
@@ -205,7 +205,7 @@ async function main() {
         const error_message: string = e.message
         // If the error code not in exitWithoutFailureErrorCodes, exit with failure.
         const exitWithFaiilure = exitWithoutFailureErrorCodes.indexOf(e.code) < 0 ? true : false
-        const slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address \`${voteBot_account}\` with error ${error_message}.`
+        const slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias}(\`${voteBot_account}\`) with error ${error_message}.`
         sendErrorToSlackAndExit(slackMessage, exitWithFaiilure)
       }
     }
@@ -239,7 +239,7 @@ async function main() {
           // exit without any failures for all errors, just post to slack
           const exitWithFaiilure = false;
           const error_message: string = e.message;
-          let slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address \`${voteBot_account}\` with error ${error_message}.`;
+          let slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias}(\`${voteBot_account}\`) with error ${error_message}.`;
           sendErrorToSlackAndExit(slackMessage, exitWithFaiilure);
         }
       } else {

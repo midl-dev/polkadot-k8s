@@ -168,7 +168,7 @@ async function main() {
     catch (e: any) {
       const error_message: string = e.message
       const exitWithFaiilure = exitWithoutFailureErrorCodes.indexOf(e.code) < 0 ? true : false
-      let slackMessage = `Payout extrinsic failed on-chain submission for validator ${stash_alias} from payout address \`${payout_account}\` with error ${error_message}.`;
+      let slackMessage = `Payout extrinsic failed on-chain submission for validator ${stash_alias} from payout address ${payout_alias}(\`${payout_account}\`) with error ${error_message}.`;
       sendErrorToSlackAndExit(slackMessage, exitWithFaiilure);
     }
   }
