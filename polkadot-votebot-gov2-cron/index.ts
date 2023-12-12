@@ -23,19 +23,21 @@ import '@polkadot/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring, encodeAddress } from '@polkadot/keyring';
 import { WebClient } from '@slack/web-api';
-//import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
+
 const yaml = require('js-yaml');
 const fs = require('fs');
 const request = require('request');
 
-async function sendErrorToSlackAndExit(message: string) {
+async function sendErrorToSlackAndExit(message: string, exitWithFailure: boolean = true) {
   console.error(message);
   if (process.env.SLACK_ALERT_TOKEN) {
     const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN!);
     await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! })
   }
-  process.exit(1)
+  const exitCode = exitWithFailure ? 1 : 0;
+  process.exit(exitCode);
 }
+
 async function main() {
   const provider = new WsProvider(`ws://${process.env.NODE_ENDPOINT}:9944`);
   // Create our API
@@ -74,6 +76,8 @@ async function main() {
   console.log(`Vote balance in nanodot:       ${voteBalance.toString()}`);
   console.log(`Node RPC endpoint in use:      ${process.env.NODE_ENDPOINT}`);
 
+  // list of error codes that would allow the job to exit without failure
+  const exitWithoutFailureErrorCodes: number[] = [1010];
 
   let valVotes: number[] = [];
 
@@ -123,7 +127,6 @@ async function main() {
       }
     }
   }
-
 
   // Load votes from external file
   const url = `https://raw.githubusercontent.com/${process.env.VOTE_REPO}/main/${chain}-gov2.yaml`;
@@ -184,7 +187,7 @@ async function main() {
           } else if (status.isFinalized) {
             console.log('Finalized block hash', status.asFinalized.toHex());
             if (result.dispatchError) {
-              let slackMessage = `Gov2 Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
+              let slackMessage = `Gov2 Vote extrinsic failed on-chain submission for validator ${stash_alias} from vote address ${vote_bot_alias}(\`${voteBot_account}\`) with error ${result.dispatchError}, check subscan, txhash ${status.asFinalized.toHex()}`;
               sendErrorToSlackAndExit(slackMessage)
             } else {
               console.log("extrinsic success in finalized block, exiting")
@@ -198,11 +201,12 @@ async function main() {
             process.exit(1)
           }
         }));
-      }
-      catch (e: any) {
-        const error_message: string = e.message;
-        let slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias} with error ${error_message}.`;
-        sendErrorToSlackAndExit(slackMessage);
+      } catch (e: any) {
+        const error_message: string = e.message
+        // If the error code not in exitWithoutFailureErrorCodes, exit with failure.
+        const exitWithFaiilure = exitWithoutFailureErrorCodes.indexOf(e.code) < 0 ? true : false
+        const slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias}(\`${voteBot_account}\`) with error ${error_message}.`
+        sendErrorToSlackAndExit(slackMessage, exitWithFaiilure)
       }
     }
   }
@@ -220,16 +224,24 @@ async function main() {
         }
       })
       if (oldVote) {
-
         console.log(`Now attempting to remove vote for referendum ${oldVote} of class ${classOfValVotes[oldVote!]}, since referendum has expired. Exit immediately after sending extrinsic without catching any failures.`)
-        await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.removeVote(classOfValVotes[oldVote!], oldVote!)).signAndSend(voteBotKey, (async (result) => {
-          console.log('Transaction status:', result.status.type);
-          let status = result.status;
-          if (status.isInBlock) {
-            console.log('Included at block hash', result.status.asInBlock.toHex());
-            process.exit(0);
-          }
-        }))
+        try {
+          await api.tx.proxy.proxy(stash_account, "Governance", api.tx.convictionVoting.removeVote(classOfValVotes[oldVote!], oldVote!)).signAndSend(voteBotKey, (async (result) => {
+            console.log('Transaction status:', result.status.type);
+            let status = result.status;
+            if (status.isInBlock) {
+              console.log('Included at block hash', result.status.asInBlock.toHex());
+              process.exit(0);
+            }
+          }))
+        }
+        catch (e: any) {
+          // exit without any failures for all errors, just post to slack
+          const exitWithFaiilure = false;
+          const error_message: string = e.message;
+          let slackMessage = `Gov2 Vote extrinsic failed on - chain submission for validator ${stash_alias} from vote address ${vote_bot_alias}(\`${voteBot_account}\`) with error ${error_message}.`;
+          sendErrorToSlackAndExit(slackMessage, exitWithFaiilure);
+        }
       } else {
         console.log("No expired referenda, exiting.")
         process.exit(0);
@@ -237,4 +249,5 @@ async function main() {
     }
   }
 }
+
 main().then(console.log).catch(console.error);

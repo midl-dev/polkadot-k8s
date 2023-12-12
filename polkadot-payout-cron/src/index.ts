@@ -56,13 +56,14 @@ import { WebClient } from '@slack/web-api';
 import '@polkadot/api-augment/kusama';
 import '@polkadot/types';
 
-async function sendErrorToSlackAndExit(message: string) {
+async function sendErrorToSlackAndExit(message: string, exitWithFailure: boolean = true) {
   console.error(message);
   if (process.env.SLACK_ALERT_TOKEN) {
     const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN!);
     await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! })
   }
-  process.exit(1)
+  const exitCode = exitWithFailure ? 1 : 0;
+  process.exit(exitCode)
 }
 async function main() {
   const provider = new WsProvider(`ws://${process.env.NODE_ENDPOINT!}:9944`);
@@ -95,7 +96,8 @@ async function main() {
   console.log(`Number of past eras to pay out ${num_past_eras}`);
   console.log(`Node RPC endpoint in use       ${process.env.NODE_ENDPOINT}`);
 
-
+  // list of error codes that would allow the job to exit without failure
+  const exitWithoutFailureErrorCodes: number[] = [1010];
 
   console.log(`Active Era is ${activeEra}`)
   let controller_address = await api.query.staking.bonded(stash_account);
@@ -155,7 +157,7 @@ async function main() {
             process.exit(0);
           }
         } else if (status.isInvalid || status.isDropped) {
-          let slackMessage = `Vote extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
+          let slackMessage = `Payout extrinsic failed for validator ${stash_alias}(${stash_account}) with error ${status}.`;
           sendErrorToSlackAndExit(slackMessage);
         } else if (status.isRetracted) {
           // fail the job but do not alert. It is likely the transaction will go through at next try.
@@ -164,8 +166,10 @@ async function main() {
       }));
     }
     catch (e: any) {
-      let slackMessage = `Payout extrinsic failed on-chain submission for validator ${stash_alias} from payout address ${payout_alias} with error ${e.message}.`;
-      sendErrorToSlackAndExit(slackMessage);
+      const error_message: string = e.message
+      const exitWithFaiilure = exitWithoutFailureErrorCodes.indexOf(e.code) < 0 ? true : false
+      let slackMessage = `Payout extrinsic failed on-chain submission for validator ${stash_alias} from payout address ${payout_alias}(\`${payout_account}\`) with error ${error_message}.`;
+      sendErrorToSlackAndExit(slackMessage, exitWithFaiilure);
     }
   }
 

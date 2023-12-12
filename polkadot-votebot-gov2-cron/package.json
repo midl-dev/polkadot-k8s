@@ -3,14 +3,14 @@
     "build": "npx tsc -d"
   },
   "dependencies": {
-    "@polkadot/api": "^10.6.1",
-    "@polkadot/types-augment": "^10.6.1",
-    "@slack/web-api": "^6.8.1",
-    "axios": "^1.4.0",
-    "follow-redirects": "^1.15.2",
+    "@polkadot/api": "^10.11.1",
+    "@polkadot/types-augment": "^10.11.1",
+    "@slack/web-api": "^6.10.0",
+    "axios": "^1.6.2",
+    "follow-redirects": "^1.15.3",
     "js-yaml": "^4.1.0",
-    "node-fetch": "^3.3.1",
+    "node-fetch": "^3.3.2",
     "request": "^2.88.2",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.2"
   }
 }
