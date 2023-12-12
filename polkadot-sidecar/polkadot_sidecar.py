@@ -1,4 +1,4 @@
-from flask import Flask, escape, request
+from flask import Flask, request
 import requests
 import time
 
