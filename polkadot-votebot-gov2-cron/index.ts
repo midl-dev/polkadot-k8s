@@ -1,5 +1,5 @@
 /* A simple one-shot voteBot script for Polkadot
- * Copyright 2022 MIDL.dev
+ * Copyright 2024 MIDL.dev
 
  * All inputs come from environment variables:
  * 
@@ -9,7 +9,9 @@
  *  * STASH_ACCOUNT_ALIAS: an alias for your validator
  *  * VOTE_REPO: the github repository where your vote choices are kept in yaml format, for example midl-dev/dotsama-votes
  *
- * The script queries the current referendums, then try to vote for the oldest unvoted referendum. It does not vote for all. To do this, run this script several times.
+ * The script queries the current referendums, then try to vote for the oldest unvoted referendum.
+ *
+ * If there is no unvoted referendum, it queries the expired referenda. If there are any, it removes the votes.
  *
  *  If voting extrinsic fails, it will post an error to the console and to Slack
  *
@@ -246,6 +248,9 @@ async function main() {
         console.log("No expired referenda, exiting.")
         process.exit(0);
       }
+    } else {
+      console.log("No expired referenda, exiting.")
+      process.exit(0);
     }
   }
 }
