@@ -103,7 +103,7 @@ async function main() {
   let controller_address = await api.query.staking.bonded(stash_account);
   let controller_ledger = (await api.query.staking.ledger(controller_address.toString())).unwrapOrDefault()
 
-  let claimed_eras = controller_ledger.claimedRewards.map(x => x.toNumber());
+  let claimed_eras = controller_ledger.legacyClaimedRewards.map(x => x.toNumber());
   console.log(`Payout for validator stash ${stash_alias} has been claimed for eras: ${claimed_eras}`);
 
   for (let i = 0; i < num_past_eras; i++) {
@@ -128,7 +128,7 @@ async function main() {
       var message = `Warning: Found and paid payouts more than one era in the past. Payout bot should run at least once per era. Please check your payout engine.`;
       if (process.env.SLACK_ALERT_TOKEN) {
         const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN);
-        const res = await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! });
+        await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! });
       }
       console.warn(message);
     }
