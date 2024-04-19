@@ -3,6 +3,16 @@ entries:
   polkadot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-04-19T05:04:25.118936678Z"
+    description: A Helm chart for Kubernetes
+    digest: 8b1c329008221c3d4b342e55b798b638617f86b15a748387ccc55b66bbd7280c
+    name: polkadot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-v9.6.tgz
+    version: v9.6
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-02-27T20:11:34.221553349Z"
     description: A Helm chart for Kubernetes
     digest: 1dc8a23f7729df2ab5b03490f15089d2b9848409cd4961589bc8e74f20a41849
@@ -624,6 +634,16 @@ entries:
   polkadot-payout:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-04-19T05:04:25.118508841Z"
+    description: A Helm chart for Kubernetes
+    digest: db1bd8d75ac376d3ff57734932e733a0a8840cdf928cf9b381fe9970ba1558f6
+    name: polkadot-payout
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-payout-v9.6.tgz
+    version: v9.6
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-02-27T20:11:34.221132363Z"
     description: A Helm chart for Kubernetes
     digest: e972b5a5b476ff2431b4068309c74a591448cba9e96de7bf16a528e1cd8688ea
@@ -1195,6 +1215,16 @@ entries:
   polkadot-votebot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-04-19T05:04:25.119220757Z"
+    description: A Helm chart for Kubernetes
+    digest: 9d5a2c0db1942eb5806dfe24a9733ca962ab301776cfb99b010145bfa780b7d7
+    name: polkadot-votebot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v9.6.tgz
+    version: v9.6
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-02-27T20:11:34.221785592Z"
     description: A Helm chart for Kubernetes
     digest: 0639d2e34634ef2c2ce865a22815ff31691da716a9456857dda9489ce391c76b
@@ -1693,4 +1723,4 @@ entries:
     urls:
     - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v7.0.tgz
     version: v7.0
-generated: "2024-02-27T20:11:34.220754968Z"
+generated: "2024-04-19T05:04:25.118091724Z"
