@@ -100,32 +100,28 @@ async function main() {
   const exitWithoutFailureErrorCodes: number[] = [1010];
 
   console.log(`Active Era is ${activeEra}`)
-  let controller_address = await api.query.staking.bonded(stash_account);
-  let controller_ledger = (await api.query.staking.ledger(controller_address.toString())).unwrapOrDefault()
 
-  let claimed_eras = controller_ledger.legacyClaimedRewards.map(x => x.toNumber());
-  console.log(`Payout for validator stash ${stash_alias} has been claimed for eras: ${claimed_eras}`);
-
+  let erasToClaim = [];
   for (let i = 0; i < num_past_eras; i++) {
     let eraToClaim = activeEra.index.toNumber() - i - 1;
-    if (claimed_eras.includes(eraToClaim)) {
-      console.log(`Payout for validator stash ${stash_alias} for era ${eraToClaim} has already been issued`);
-      continue;
-    }
+    let exposed = !(await api.query.staking.erasStakersOverview(eraToClaim, stash_account)).isNone;
 
-    const erasRewardsPoints = await api.query.staking.erasRewardPoints(eraToClaim)
-    const thisValRewards = erasRewardsPoints.individual.toHuman()[stash_account]
-
-    if (thisValRewards) {
-      console.log(`Rewards of ${thisValRewards} found for validator for ${eraToClaim}.`)
+    if (exposed) {
+      let claimed = (await api.query.staking.claimedRewards(eraToClaim, stash_account)).length > 0;
+      if (!claimed) {
+        console.log(`Outstanding rewards found for validator for ${eraToClaim}.`)
+        erasToClaim.push(eraToClaim);
+      } else {
+        console.log(`Rewards already claimed for era ${eraToClaim}, no payout will be made`);
+      }
     } else {
-      console.log(`Stash ${stash_alias} was not in the active validator set for era ${eraToClaim}, no payout can be made`);
-      continue;
+      console.log(`Validator was not in active set for era ${eraToClaim}, no payout will be made`);
     }
+  }
 
-
-    if (i > 0) {
-      var message = `Warning: Found and paid payouts more than one era in the past. Payout bot should run at least once per era. Please check your payout engine.`;
+  if (erasToClaim.length > 0) {
+    if (erasToClaim.length > 1) {
+      var message = `Warning: Found and paid payouts more than one era in the past: eras ${erasToClaim} for validator ${stash_alias}. Payout bot should run at least once per era. Please check your payout engine.`;
       if (process.env.SLACK_ALERT_TOKEN) {
         const slackWeb = new WebClient(process.env.SLACK_ALERT_TOKEN);
         await slackWeb.chat.postMessage({ text: message, channel: process.env.SLACK_ALERT_CHANNEL! });
@@ -133,10 +129,10 @@ async function main() {
       console.warn(message);
     }
 
-    console.log(`Issuing payoutStakers extrinsic from address ${payout_alias} for validator stash ${stash_alias} for era ${eraToClaim}`);
+    console.log(`Issuing payoutStakers extrinsic from address ${payout_alias} for validator stash ${stash_alias} for era ${erasToClaim[0]}`);
 
     try {
-      await api.tx.staking.payoutStakers(stash_account, eraToClaim).signAndSend(payoutKey, (async (result) => {
+      await api.tx.staking.payoutStakers(stash_account, erasToClaim[0]).signAndSend(payoutKey, (async (result) => {
         let status = result.status;
         let events = result.events;
         console.log('Transaction status:', result.status.type);
@@ -171,10 +167,11 @@ async function main() {
       let slackMessage = `Payout extrinsic failed on-chain submission for validator ${stash_alias} from payout address ${payout_alias}(\`${payout_account}\`) with error ${error_message}.`;
       sendErrorToSlackAndExit(slackMessage, exitWithFaiilure);
     }
+  } else {
+    console.log("Exiting");
+    process.exit(0);
   }
 
-  console.log("Exiting");
-  process.exit(0);
 }
 
 main().catch(console.error);
