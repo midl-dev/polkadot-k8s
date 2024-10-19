@@ -9,6 +9,7 @@ data:
   CHAIN: "{{ .Values.chain}}"
   NAMESPACE: "{{ .Release.Namespace }}"
   PUBLIC_MULTIADDR: "/ip4/{{ .Values.p2p_ip }}/tcp/{{ .Values.p2p_port }}"
+  NO_HARDWARE_BENCHMARKS: "{{ .Values.no_hardware_benchmarks }}"
 kind: ConfigMap
 metadata:
   name: polkadot-configmap

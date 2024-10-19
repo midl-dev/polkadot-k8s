@@ -70,3 +70,6 @@ resources:
 livenessProbe:
   periodSeconds: 30
   failureThreshold: 40
+
+#disable hardware benchmarks
+no_hardware_benchmarks: "true"
