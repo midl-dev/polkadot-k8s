@@ -10,7 +10,11 @@ polkadot_k8s_images:
 
 #polkadot_archive_url:
 
+# customize telemetry url
 polkadot_telemetry_url: null
+
+# set to true to not upload any telemetry
+no_telemetry: false
 
 polkadot_validator_name: polkadot_k8s_pulumi
 

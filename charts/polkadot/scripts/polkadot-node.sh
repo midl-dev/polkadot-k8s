@@ -27,6 +27,10 @@ if [ ! -z "$OUT_PEERS" ]; then
   out_peers_param="--out-peers=${OUT_PEERS}"
 fi
 
+if [ ! -z "$NO_TELEMETRY" ]; then
+  no_telemetry_param="--no-telemetry"
+fi
+
 if [ ! -z "$TELEMETRY_URL" ]; then
   telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 0\""
 fi
@@ -56,6 +60,7 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
   $node_key_param \
   $name_param \
   $telemetry_url_param \
+  $no_telemetry_param \
   $chain_param \
   $public_address_param \
   $local_peer_param

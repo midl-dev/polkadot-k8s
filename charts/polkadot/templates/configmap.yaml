@@ -3,6 +3,9 @@ apiVersion: v1
 data:
   ARCHIVE_URL: "{{ .Values.polkadot_archive_url }}"
   TELEMETRY_URL: "{{ .Values.polkadot_telemetry_url }}"
+{{- if .Values.no_telemetry }}
+  NO_TELEMETRY: "true"
+{{- end }}
   VALIDATOR_NAME: "{{ .Values.polkadot_validator_name }}"
   OUT_PEERS: "{{ .Values.number_of_out_peers }}"
   IN_PEERS: "{{ .Values.number_of_in_peers }}"
