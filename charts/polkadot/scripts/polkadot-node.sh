@@ -35,7 +35,7 @@ if [ ! -z "$PUBLIC_MULTIADDR" ]; then
   public_address_param="--public-addr=${PUBLIC_MULTIADDR}"
 fi
 
-if [ ! -z "$NO_HARDWARE_BENCHMARKS" && "$NO_HARDWARE_BENCHMARKS" == "true" ]; then
+if [ ! -z "$NO_HARDWARE_BENCHMARKS" ] && [ "$NO_HARDWARE_BENCHMARKS" == "true" ]; then
   hw_bench_param="--no-hardware-benchmarks"
 fi
 
