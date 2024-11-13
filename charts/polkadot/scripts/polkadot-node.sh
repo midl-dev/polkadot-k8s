@@ -32,7 +32,7 @@ if [ ! -z "$NO_TELEMETRY" ]; then
 fi
 
 if [ ! -z "$TELEMETRY_URL" ]; then
-  telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 0\""
+  telemetry_url_param="--telemetry-url \"$TELEMETRY_URL 1\""
 fi
 
 if [ ! -z "$PUBLIC_MULTIADDR" ]; then
