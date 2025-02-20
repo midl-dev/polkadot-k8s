@@ -53,6 +53,7 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
   --unsafe-force-node-key-generation \
   --rpc-methods=Unsafe \
   --rpc-cors=all \
+  --network-backend litep2p \
   $hw_bench_param \
   --sync=warp \
   $out_peers_param \
