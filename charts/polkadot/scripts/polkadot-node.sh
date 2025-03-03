@@ -43,6 +43,10 @@ if [ ! -z "$NO_HARDWARE_BENCHMARKS" ] && [ "$NO_HARDWARE_BENCHMARKS" == "true" ]
   hw_bench_param="--no-hardware-benchmarks"
 fi
 
+if [ "$CHAIN" == "kusama" ]; then
+  litep2p_param="--network-backend litep2p"
+fi
+
 # sleep 1000
 eval /usr/bin/polkadot --validator --wasm-execution Compiled \
   --base-path=/polkadot/.local/share/polkadot/ \
@@ -53,6 +57,7 @@ eval /usr/bin/polkadot --validator --wasm-execution Compiled \
   --unsafe-force-node-key-generation \
   --rpc-methods=Unsafe \
   --rpc-cors=all \
+  $litep2p_param \
   $hw_bench_param \
   --sync=warp \
   $out_peers_param \
