@@ -3,6 +3,16 @@ entries:
   polkadot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-03-03T02:37:11.013356026Z"
+    description: A Helm chart for Kubernetes
+    digest: 52b28f2dc6c67aedce839d945c8516043bf83f047597adb86529e9fb9d25caa9
+    name: polkadot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-v9.14.tgz
+    version: v9.14
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-11-13T06:03:27.101873685Z"
     description: A Helm chart for Kubernetes
     digest: f4959526e75f1beeaaa6140601be80668b5fd41eae4e5a247863ef6aabbc6a4b
@@ -704,6 +714,16 @@ entries:
   polkadot-payout:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-03-03T02:37:11.012823499Z"
+    description: A Helm chart for Kubernetes
+    digest: 5f8ed6e0588759651fa3d3db719f41c2bb81743e359b77a30aedb24fd059e302
+    name: polkadot-payout
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-payout-v9.14.tgz
+    version: v9.14
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-11-13T06:03:27.101086336Z"
     description: A Helm chart for Kubernetes
     digest: 7d4109743e30a62d8aba60a298eff1be62ea0a450ab2cc37babbf9c8533b6c63
@@ -1355,6 +1375,16 @@ entries:
   polkadot-votebot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-03-03T02:37:11.013634477Z"
+    description: A Helm chart for Kubernetes
+    digest: 5abb9e245076c736d4d616c1c75e8658b715f8f76de5d93430793a8724066abe
+    name: polkadot-votebot
+    type: application
+    urls:
+    - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v9.14.tgz
+    version: v9.14
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-11-13T06:03:27.102118034Z"
     description: A Helm chart for Kubernetes
     digest: 48c72f376710be79faa2b7ca4bc594f8867f6a2eb9e1c60b7f2cf34f1546cf79
@@ -1933,4 +1963,4 @@ entries:
     urls:
     - https://midl-dev.github.io/polkadot-k8s/polkadot-votebot-v7.0.tgz
     version: v7.0
-generated: "2024-11-13T06:03:27.100161525Z"
+generated: "2025-03-03T02:37:11.011925167Z"
